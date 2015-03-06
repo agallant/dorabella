@@ -54,6 +54,7 @@ Chat.prototype.boot = function () {
       this.pgp.exportKey().then(
         function (publicKey) {
           this.publicKey = publicKey;
+          this.dispatchEvent('export-publicKey', publicKey);
           // Explicitly send to current clients
           for (var client in this.clientList) {
             this.social.sendMessage(client, this.publicKey);

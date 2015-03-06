@@ -9,17 +9,18 @@ function start(ChatClient) {
   // If messages are going to a specific user, store that here.
       activeBuddylistEntry,
       buddylist,
-      input;
+      input,
+      publicKey;
 
   document.getElementById('msg-input').focus();
 
   function clearLog() {
-    var log = document.getElementById('messagelist');
+    var log = document.getElementById('statuslog');
     log.innerHTML = '';
   }
 
   function appendLog(elt) {
-    var log = document.getElementById('messagelist'),
+    var log = document.getElementById('statuslog'),
         br;
     //Trim old messages
     while (log.childNodes.length > 36) {
@@ -39,11 +40,12 @@ function start(ChatClient) {
 
   function redrawBuddylist() {
     var onClick = function (buddylistEntry, child) {
-          console.log('Messages will be sent to: ' + buddylistEntry.userId);
-          activeBuddylistEntry = buddylistEntry;
-          redrawBuddylist();
-          document.getElementById('msg-input').focus();
-        },
+      console.log('Messages will be sent to: ' + buddylistEntry.userId);
+      activeBuddylistEntry = buddylistEntry;
+      redrawBuddylist();
+      addTab(buddylistEntry.userId);
+      document.getElementById('msg-input').focus();
+    },
         buddylistDiv = document.getElementById('buddylist'),
         userId,
         child;
@@ -69,9 +71,10 @@ function start(ChatClient) {
   }
 
   // on public key generation, do stuff
-  chatClient.on('export-publicKey', function (publicKey) {
-    console.log('set up public key');
-    console.log(publicKey);
+  chatClient.on('export-publicKey', function (userPublicKey) {
+    publicKey = userPublicKey;
+    document.getElementById('pgpkey').innerHTML =
+      '<b>Your PGP Public Key is:</b><br>' + '<pre>' + publicKey + '</pre>';
   });
 
   // on changes to the buddylist, redraw entire buddylist
@@ -103,6 +106,7 @@ function start(ChatClient) {
   chatClient.on('recv-status', function (msg) {
     if (msg && msg === 'online') {
       document.getElementById('msg-input').disabled = false;
+      msg += ' - click a buddy to start chatting!';
     } else {
       document.getElementById('msg-input').disabled = true;
     }
