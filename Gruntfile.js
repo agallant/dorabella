@@ -5,6 +5,7 @@
 var path = require('path');
 var pgpPath = path.dirname(require.resolve('freedom-pgp-e2e/package.json'));
 var freedomPath = path.dirname(require.resolve('freedom'));
+var tabPath = path.dirname(require.resolve('tab-strip'));
 
 module.exports = function(grunt) {
   grunt.initConfig({
@@ -33,6 +34,14 @@ module.exports = function(grunt) {
         cwd: pgpPath + '/build/',
         src: ['*.js', 'pgpapi.json'],
         dest: 'build/freedom-pgp-e2e/',
+        flatten: true,
+        filter: 'isFile',
+        expand: true
+      },
+      tabStrip: {
+        cwd: tabPath,
+        src: ['TabStrip.js'],
+        dest: 'build/',
         flatten: true,
         filter: 'isFile',
         expand: true
