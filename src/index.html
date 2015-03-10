@@ -12,8 +12,8 @@
       section {border: 1px solid black; position:relative; display: inline-block; vertical-align:top;}
       #uid {font-family: helvetica; padding-left: 5px;}
       #buddylist {padding: 5px; margin-left:-5px; min-width: 150px;}
-      #msg-input {width:700px; margin:0;}
-      #messagelist {height: 400px; overflow-y: scroll; padding-left: 5px;}
+      input {width:700px; margin:0;}
+      div[id^='msglist-'] {width:700px; height: 400px; overflow-y: scroll; padding-left: 5px;}
       #statuslog {width:700px; overflow-y: scroll; padding-left: 5px;}
       #pgpkey {padding-left: 5px;}
     </style>
@@ -31,16 +31,8 @@
           <div id='pgpkey' class='text'></div>
         </section>
       </div>
-      <div class='pane-2'>
-        <div style='clear:both; height:15px;'></div>
-        <section>
-          <div id='messagelist' class='text'></div>
-          <input id='msg-input' type='text' placeholder='Type message here'/>
-        </section>
-      </div>
     </div>
     <section id='buddylist'>
     </section>
-    <script type='text/javascript' src='tabsetup.js'></script>
   </body>
 </html>
