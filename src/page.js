@@ -9,6 +9,7 @@ function start(ChatClient) {
   // If messages are going to a specific user, store that here.
       activeBuddy,
       buddylist,
+      buddytabs = {},
       input,
       publicKey;
 
@@ -163,10 +164,9 @@ function start(ChatClient) {
       tab.classList.add('active');
       document.querySelector('.panes > .active').classList.remove('active');
       document.querySelector('.panes .' + tab.dataset.pane).classList.add('active');
-      if (tab.getAttribute('data-pane') === 'pane-1') {
-        // 1st tab is status, so no buddy is active
-        activeBuddy = undefined;
-      }
+      // Need to figure out which buddy is now active
+      activeBuddy = buddytabs[tab.getAttribute('data-pane')];
+      console.log(activeBuddy);
       redrawBuddylist();
     });
   }
@@ -176,6 +176,7 @@ function start(ChatClient) {
     if (!document.getElementById(uid)) {
       var newtab = document.createElement('div');
       newtab.className = 'pane-' + (numTabs + 1);
+      buddytabs[newtab.className] = uid;
       newtab.id = uid;
       // TODO - make this look nicer
       newtab.innerHTML = "<div style='clear:both; height:15px;'></div>" +
