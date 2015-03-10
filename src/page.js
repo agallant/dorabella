@@ -7,7 +7,7 @@
 function start(ChatClient) {
   var chatClient = new ChatClient(),
   // If messages are going to a specific user, store that here.
-      activeBuddylistEntry,
+      activeBuddy,
       buddylist,
       input,
       publicKey;
@@ -42,10 +42,10 @@ function start(ChatClient) {
 
   function redrawBuddylist() {
     var onClick = function (buddylistEntry, child) {
-      console.log('Messages will be sent to: ' + buddylistEntry.userId);
-      activeBuddylistEntry = buddylistEntry;
+      activeBuddy = userId;
+      console.log('Messages will be sent to: ' + activeBuddy);
       redrawBuddylist();
-      addOrActivateTab(buddylistEntry.userId);
+      addOrActivateTab(activeBuddy);
       //document.getElementById('msg-input').focus();
     },
         buddylistDiv = document.getElementById('buddylist'),
@@ -59,7 +59,7 @@ function start(ChatClient) {
     for (userId in buddylist) {
       if (buddylist.hasOwnProperty(userId)) {
         child = document.createElement('div');
-        if (activeBuddylistEntry === buddylist[userId]) {
+        if (activeBuddy === userId) {
           child.innerHTML = '<i>' + makeDisplayString(buddylist[userId]) + '</i>';
         } else {
           child.innerHTML = makeDisplayString(buddylist[userId]);
@@ -127,7 +127,7 @@ function start(ChatClient) {
         var text = input.value;
         input.value = "";
         append(msglist, document.createTextNode("You: " + text));
-        chatClient.send(activeBuddylistEntry.userId, text);
+        chatClient.send(activeBuddy, text);
       }
     };
     input.focus();
@@ -162,6 +162,11 @@ function start(ChatClient) {
       tab.classList.add('active');
       document.querySelector('.panes > .active').classList.remove('active');
       document.querySelector('.panes .' + tab.dataset.pane).classList.add('active');
+      if (tab.getAttribute('data-pane') === 'pane-1') {
+        // 1st tab is status, so no buddy is active
+        activeBuddy = undefined;
+      }
+      redrawBuddylist();
     });
   }
 
