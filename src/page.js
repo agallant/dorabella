@@ -58,7 +58,7 @@ function start(ChatClient) {
       if (buddylist.hasOwnProperty(userId)) {
         child = document.createElement('div');
         if (activeBuddylistEntry === buddylist[userId]) {
-          child.innerHTML = '[' + makeDisplayString(buddylist[userId]) + ']';
+          child.innerHTML = '<i>' + makeDisplayString(buddylist[userId]) + '</i>';
         } else {
           child.innerHTML = makeDisplayString(buddylist[userId]);
         }
@@ -67,7 +67,6 @@ function start(ChatClient) {
         buddylistDiv.appendChild(child);
       }
     }
-
   }
 
   // on public key generation, do stuff

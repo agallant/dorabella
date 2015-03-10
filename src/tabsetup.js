@@ -32,18 +32,28 @@ function redrawTabs() {
 
 function addTab(uid) {
   // Add a tab to chat with a new user (uid)
-  var newtab = document.createElement('div');
-  newtab.className = 'pane-' + (numTabs + 1);
-  newtab.id = uid;
-  // TODO - make this look nicer
-  newtab.innerHTML = "<div style='clear:both; height:15px;'></div>" +
-    "<section>" +
-    "<div id='messagelist' class='text'></div>" +
-    "<input id='msg-input' type='text' placeholder='Type message here'/>" +
-    "</section>" +
-    "</div>";
-  document.getElementById('panelist').appendChild(newtab);
-  redrawTabs();
+  if (!document.getElementById(uid)) {
+    var newtab = document.createElement('div');
+    newtab.className = 'pane-' + (numTabs + 1);
+    newtab.id = uid;
+    // TODO - make this look nicer
+    newtab.innerHTML = "<div style='clear:both; height:15px;'></div>" +
+      "<section>" +
+      "<div id='messagelist' class='text'></div>" +
+      "<input id='msg-input' type='text' placeholder='Type message here'/>" +
+      "</section>" +
+      "</div>";
+    document.getElementById('panelist').appendChild(newtab);
+    redrawTabs();
+  }
+  // Activate the new tab
+  var addedtab = document.getElementById(uid);
+  var tabs = document.getElementsByTagName('li');
+  for (var i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('data-pane') === addedtab.className) {
+      tabStrip._events.activateTab[0](tabs[i]);
+    }
+  }
 }
 
 redrawTabs();
