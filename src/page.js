@@ -42,7 +42,7 @@ function start(ChatClient) {
 
   function redrawBuddylist() {
     var onClick = function (buddylistEntry, child) {
-      activeBuddy = userId;
+      activeBuddy = buddylistEntry.userId;
       console.log('Messages will be sent to: ' + activeBuddy);
       redrawBuddylist();
       addOrActivateTab(activeBuddy);
@@ -90,6 +90,7 @@ function start(ChatClient) {
     var userId = data.from.userId,
         displayName = buddylist[userId].name || userId,
         message = displayName + ": " + data.message;
+    activeBuddy = userId;
     addOrActivateTab(userId);
     append(document.getElementById('msglist-' + userId),
            document.createTextNode(message));
@@ -193,7 +194,7 @@ function start(ChatClient) {
     var tabs = document.getElementsByTagName('li');
     for (var i = 0; i < tabs.length; i++) {
       if (tabs[i].getAttribute('data-pane') === addedtab.className) {
-        tabStrip._events.activateTab[0](tabs[i]);
+        tabStrip.emit('activateTab', tabs[i]);
       }
     }
   }
