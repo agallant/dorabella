@@ -45,7 +45,7 @@ function start(ChatClient) {
       console.log('Messages will be sent to: ' + buddylistEntry.userId);
       activeBuddylistEntry = buddylistEntry;
       redrawBuddylist();
-      addTab(buddylistEntry.userId);
+      addOrActivateTab(buddylistEntry.userId);
       //document.getElementById('msg-input').focus();
     },
         buddylistDiv = document.getElementById('buddylist'),
@@ -90,6 +90,7 @@ function start(ChatClient) {
     var userId = data.from.userId,
         displayName = buddylist[userId].name || userId,
         message = displayName + ": " + data.message;
+    addOrActivateTab(userId);
     append(document.getElementById('msglist-' + userId),
            document.createTextNode(message));
   });
@@ -118,9 +119,9 @@ function start(ChatClient) {
     append(document.getElementById('statuslog'), elt);
   });
 
-  function setupChat(num) {
-    input = document.getElementById('msginput-' + num);
-    msglist = document.getElementById('msglist-' + num);
+  function setupChat(uid) {
+    input = document.getElementById('msginput-' + uid);
+    msglist = document.getElementById('msglist-' + uid);
     input.onkeydown = function (evt) {
       if (evt.keyCode === 13) {
         var text = input.value;
@@ -164,7 +165,7 @@ function start(ChatClient) {
     });
   }
 
-  function addTab(uid) {
+  function addOrActivateTab(uid) {
     // Add a tab to chat with a new user (uid)
     if (!document.getElementById(uid)) {
       var newtab = document.createElement('div');
