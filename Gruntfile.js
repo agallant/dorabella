@@ -5,6 +5,7 @@
 var path = require('path');
 var pgpPath = path.dirname(require.resolve('freedom-pgp-e2e/package.json'));
 var freedomPath = path.dirname(require.resolve('freedom'));
+var providersPath = path.dirname(require.resolve('radiatus-providers'));
 var tabPath = path.dirname(require.resolve('tab-strip'));
 
 module.exports = function(grunt) {
@@ -23,8 +24,8 @@ module.exports = function(grunt) {
         filter: 'isFile',
         expand: true
       },
-      freedomWsServer: {
-        src: [freedomPath + '/providers/social/websocket-server/*'],
+      radiatusWsServer: {
+        src: [providersPath + '/src/providers/social.radiatus.js*'],
         dest: 'build/websocket-server/',
         flatten: true,
         filter: 'isFile',

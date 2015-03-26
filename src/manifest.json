@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "socialprovider": {
-      "url": "websocket-server/social.ws.json",
+      "url": "websocket-server/social.radiatus.json",
       "api": "social"
     },
     "pgpprovider": {
