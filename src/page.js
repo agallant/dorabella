@@ -45,9 +45,8 @@ function start(ChatClient) {
     var onClick = function (buddylistEntry, child) {
       activeBuddy = buddylistEntry.userId;
       console.log('Messages will be sent to: ' + activeBuddy);
-      redrawBuddylist();
       addOrActivateTab(activeBuddy);
-      //document.getElementById('msg-input').focus();
+      redrawBuddylist();
     },
         buddylistDiv = document.getElementById('buddylist'),
         userId,
@@ -166,8 +165,10 @@ function start(ChatClient) {
       document.querySelector('.panes .' + tab.dataset.pane).classList.add('active');
       // Need to figure out which buddy is now active
       activeBuddy = buddytabs[tab.getAttribute('data-pane')];
-      console.log(activeBuddy);
       redrawBuddylist();
+      if (activeBuddy) {
+        setupChat(activeBuddy);
+      }
     });
   }
 
@@ -187,7 +188,6 @@ function start(ChatClient) {
         "</section>" +
         "</div>";
       document.getElementById('panelist').appendChild(newtab);
-      setupChat(uid);
       redrawTabs();
     }
     // Activate the new tab
