@@ -131,7 +131,8 @@ function start(ChatClient) {
         chatClient.send(activeBuddy, text);
       }
     };
-    input.focus();
+    // Timeout for focus to work w/tab redrawing
+    setTimeout(function () { input.focus(); }, 100);
   }
 
   // SEE: https://bitbucket.org/sparklinlabs/tab-strip/src
