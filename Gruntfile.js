@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         expand: true
       },
       freedomPgpE2e: {
-        cwd: pgpPath + '/build/',
+        cwd: pgpPath + '/dist/',
         src: ['*.js', 'pgpapi.json'],
         dest: 'build/freedom-pgp-e2e/',
         flatten: true,
