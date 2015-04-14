@@ -67,9 +67,26 @@ module.exports = function(grunt) {
       }
     },
 
+    buildcontrol: {
+      options: {
+	dir: 'build/',
+	commit: true,
+	push: true,
+	message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
+	  '%sourceBranch%'
+      },
+      pages: {
+	options: {
+          remote: 'git@github.com:soycode/dorabella.git',
+          branch: 'gh-pages'
+	}
+      }
+    },
+
     clean: ['build/']
   });
 
+  grunt.loadNpmTasks('grunt-build-control');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
