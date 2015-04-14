@@ -50,7 +50,7 @@ module.exports = function(grunt) {
       dist: {
 	cwd: 'build/',
 	src: ['**/**'],
-	dest: 'dist/'
+	dest: 'dist/',
 	expand: true
       }
     },
