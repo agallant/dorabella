@@ -46,6 +46,12 @@ module.exports = function(grunt) {
         flatten: true,
         filter: 'isFile',
         expand: true
+      },
+      dist: {
+	cwd: 'build/',
+	src: ['**/**'],
+	dest: 'dist/'
+	expand: true
       }
     },
 
@@ -69,7 +75,7 @@ module.exports = function(grunt) {
 
     buildcontrol: {
       options: {
-	dir: 'build/',
+	dir: 'dist/',
 	commit: true,
 	push: true,
 	message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
@@ -109,6 +115,10 @@ module.exports = function(grunt) {
   grunt.registerTask('demo', [
     'build',
     'connect'
+  ]);
+  grunt.registerTask('deploy', [
+    'build',
+    'buildcontrol'
   ]);
   grunt.registerTask('default', [
     'build',
