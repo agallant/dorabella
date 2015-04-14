@@ -83,7 +83,7 @@ module.exports = function(grunt) {
       },
       pages: {
 	options: {
-          remote: 'git@github.com:soycode/dorabella.git',
+          remote: 'https://github.com/soycode/dorabella.git',
           branch: 'gh-pages'
 	}
       }
