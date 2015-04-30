@@ -65,7 +65,9 @@ function start(ChatClient) {
           child.innerHTML = makeDisplayString(buddylist[userId]);
         }
         // If the user clicks on a buddy, change our current destination for messages
-        child.addEventListener('click', onClick.bind(this, buddylist[userId], child), true);
+        child.addEventListener('click',
+                               onClick.bind(this, buddylist[userId], child),
+                               true);
         buddylistDiv.appendChild(child);
       }
     }
@@ -141,7 +143,12 @@ function start(ChatClient) {
   var tabStrip = new TabStrip(document.querySelector('.tabs-container'));
 
   function redrawTabs() {
-    var pane, ref, tab, tabLabel;
+    var pane, ref, tab, tabLabel, tabX;
+    var onClick = function (i) {
+      console.log("CLOSING: " + i);
+      var tabs = document.getElementsByTagName('li');
+      tabStrip.emit('closeTab', tabs[i]);
+    };
     tabStrip.tabsRoot.innerHTML = '';  // reset to blank
     ref = document.querySelectorAll('.panes > div');
     numTabs = ref.length;
@@ -153,23 +160,39 @@ function start(ChatClient) {
       tabLabel.classList.add('label');
       tabLabel.textContent = pane.id;
       tab.appendChild(tabLabel);
+      if (i > 0) {
+        // Add X mark to close tabs, except first status tab
+        tabX = document.createElement('span');
+        tabX.classList.add('label');
+        tabX.textContent = '\u2612';  // ballot box with X
+        // TODO: this event isn't fired properly for some reason
+        tabX.addEventListener('click', onClick.bind(this, i), true);
+        tab.appendChild(tabX); 
+      }
       tabStrip.tabsRoot.appendChild(tab);
       if (i === 0) {
         tab.classList.add('active');
-        document.querySelector('.panes .' + tab.dataset.pane).classList.add('active');
+        document.querySelector('.panes .' + tab.dataset.pane)
+          .classList.add('active');
       }
     }
     tabStrip.on('activateTab', function(tab) {
       tabStrip.tabsRoot.querySelector('.active').classList.remove('active');
       tab.classList.add('active');
       document.querySelector('.panes > .active').classList.remove('active');
-      document.querySelector('.panes .' + tab.dataset.pane).classList.add('active');
+      document.querySelector('.panes .' + tab.dataset.pane)
+        .classList.add('active');
       // Need to figure out which buddy is now active
       activeBuddy = buddytabs[tab.getAttribute('data-pane')];
       redrawBuddylist();
       if (activeBuddy) {
         setupChat(activeBuddy);
       }
+    });
+    tabStrip.on('closeTab', function(tab) {
+      console.log('Removing a tab');
+      tabStrip.tabsRoot.removeChild(tab);
+      // TODO activate status tab or neighbor tab
     });
   }
 
