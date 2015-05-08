@@ -2,7 +2,7 @@
   "name": "WebRTC Chat",
   "description": "WebRTC Chat Sample freedom.js application",
   "app": {
-    "script": "main.js",
+    "script": "securechat.js",
     "index": "index.html",
     "static": [ 
       "../style.css",

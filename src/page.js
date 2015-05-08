@@ -230,5 +230,5 @@ function start(ChatClient) {
 }
 
 window.onload = function () {
-  freedom('manifest.json').then(start);
+  freedom('securechat.json').then(start);
 };

@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/soycode/dorabella",
   "devDependencies": {
-    "freedom": "^0.6.23",
+    "freedom": "^0.6.24",
     "freedom-pgp-e2e": "^0.3.1",
     "grunt": "^0.4.5",
     "grunt-build-control": "^0.5.0",
