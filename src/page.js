@@ -1,4 +1,3 @@
-/*jslint sloppy:true */
 /*globals freedom, console, require*/
 
 /**
@@ -36,7 +35,8 @@ function start(ChatClient) {
   }
 
   function makeDisplayString(buddylistEntry) {
-    return buddylistEntry.name && buddylistEntry.name !== buddylistEntry.userId ?
+    return buddylistEntry.name &&
+      buddylistEntry.name !== buddylistEntry.userId ?
       buddylistEntry.name + ' (' + buddylistEntry.userId + ')' :
       buddylistEntry.userId;
   }
@@ -60,11 +60,13 @@ function start(ChatClient) {
       if (buddylist.hasOwnProperty(userId)) {
         child = document.createElement('div');
         if (activeBuddy === userId) {
-          child.innerHTML = '<i>' + makeDisplayString(buddylist[userId]) + '</i>';
+          child.innerHTML = '<i>' + makeDisplayString(buddylist[userId]) +
+            '</i>';
         } else {
           child.innerHTML = makeDisplayString(buddylist[userId]);
         }
-        // If the user clicks on a buddy, change our current destination for messages
+        // If the user clicks on a buddy,
+        // change our current destination for messages
         child.addEventListener('click',
                                onClick.bind(this, buddylist[userId], child),
                                true);
