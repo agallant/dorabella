@@ -165,9 +165,7 @@ function start(ChatClient) {
       if (i > 0) {
         // Add X mark to close tabs, except first status tab
         tabX = document.createElement('span');
-        tabX.classList.add('label');
         tabX.textContent = '\u2612';  // ballot box with X
-        // TODO: this event isn't fired properly for some reason
         tabX.addEventListener('click', onClick.bind(this, i), true);
         tab.appendChild(tabX); 
       }
