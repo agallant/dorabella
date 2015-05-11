@@ -22,9 +22,9 @@ function WSSocialProvider(dispatchEvent, webSocket) {
 
   this.websocket = freedom["core.websocket"] || webSocket;
   if (typeof DEBUG !== 'undefined' && DEBUG) {
-    this.WS_URL = 'ws://data.radiatus.io:8082/route/';
+    this.WS_URL = 'ws://p2pbr.com:8082/route/';
   } else {
-    this.WS_URL = 'ws://data.radiatus.io/route/';  // TODO: wss://
+    this.WS_URL = 'wss://p2pbr.com/route/';
   }
   this.social = freedom();
 
@@ -235,15 +235,14 @@ WSSocialProvider.prototype.changeRoster = function(id, stat) {
  **/
 WSSocialProvider.prototype.onMessage = function(finishLogin, msg) {
   var i;
-  console.log(msg);
   msg = JSON.parse(msg.text);
 
   // If state information from the server
   // Store my own ID and all known users at the time
   if (msg.cmd === 'state') {
     this.id = msg.id;
-    for (i = 0; i < msg.roster.length; i += 1) {
-      this.changeRoster(msg.roster[i], true);
+    for (i = 0; i < msg.msg.length; i += 1) {
+      this.changeRoster(msg.msg[i], true);
     }
     finishLogin.finish(this.changeRoster(this.id, true));
   // If directed message, emit event

@@ -353,7 +353,6 @@ module.exports = TabStrip = (function(superClass) {
       tabElement.setCapture();
     }
     tabPlaceholderElement = document.createElement('li');
-    tabPlaceholderElement.style.width = tabRect.width + "px";
     tabPlaceholderElement.className = 'drop-placeholder';
     tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
     updateDraggedTab = (function(_this) {
