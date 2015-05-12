@@ -147,9 +147,10 @@ function start(ChatClient) {
   function redrawTabs() {
     var pane, ref, tab, tabLabel, tabX;
     var onClick = function (i) {
-      console.log("CLOSING: " + i);
-      var tabs = document.getElementsByTagName('li');
-      tabStrip.emit('closeTab', tabs[i]);
+      // Activate the status tab - TODO something smarter
+      tabStrip.emit('activateTab', tabStrip.tabsRoot.childNodes[0]);
+      tabStrip.emit('closeTab', tabStrip.tabsRoot.childNodes[i]);
+      redrawTabs();
     };
     tabStrip.tabsRoot.innerHTML = '';  // reset to blank
     ref = document.querySelectorAll('.panes > div');
@@ -165,9 +166,7 @@ function start(ChatClient) {
       if (i > 0) {
         // Add X mark to close tabs, except first status tab
         tabX = document.createElement('span');
-        tabX.classList.add('label');
         tabX.textContent = '\u2612';  // ballot box with X
-        // TODO: this event isn't fired properly for some reason
         tabX.addEventListener('click', onClick.bind(this, i), true);
         tab.appendChild(tabX); 
       }
@@ -178,25 +177,30 @@ function start(ChatClient) {
           .classList.add('active');
       }
     }
-    tabStrip.on('activateTab', function(tab) {
-      tabStrip.tabsRoot.querySelector('.active').classList.remove('active');
-      tab.classList.add('active');
-      document.querySelector('.panes > .active').classList.remove('active');
-      document.querySelector('.panes .' + tab.dataset.pane)
-        .classList.add('active');
-      // Need to figure out which buddy is now active
-      activeBuddy = buddytabs[tab.getAttribute('data-pane')];
-      redrawBuddylist();
-      if (activeBuddy) {
-        setupChat(activeBuddy);
-      }
-    });
-    tabStrip.on('closeTab', function(tab) {
-      console.log('Removing a tab');
-      tabStrip.tabsRoot.removeChild(tab);
-      // TODO activate status tab or neighbor tab
-    });
   }
+
+  tabStrip.on('activateTab', function(tab) {
+    tabStrip.tabsRoot.querySelector('.active').classList.remove('active');
+    tab.classList.add('active');
+    document.querySelector('.panes > .active').classList.remove('active');
+    document.querySelector('.panes .' + tab.dataset.pane)
+      .classList.add('active');
+    // Need to figure out which buddy is now active
+    activeBuddy = buddytabs[tab.getAttribute('data-pane')];
+    redrawBuddylist();
+    if (activeBuddy) {
+      setupChat(activeBuddy);
+    }
+  });
+
+  tabStrip.on('closeTab', function(tab) {
+    // Remove the tab top
+    tabStrip.tabsRoot.removeChild(tab);
+    // Remove the tab body
+    var body = document.querySelector('.panes .' + tab.dataset.pane);
+    document.getElementById('panelist').removeChild(body);
+  });
+
 
   function addOrActivateTab(uid) {
     // Add a tab to chat with a new user (uid)
@@ -225,7 +229,6 @@ function start(ChatClient) {
       }
     }
   }
-
   redrawTabs();
 }
 
