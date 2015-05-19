@@ -175,6 +175,11 @@ function start(ChatClient) {
         tab.classList.add('active');
         document.querySelector('.panes .' + tab.dataset.pane)
           .classList.add('active');
+      } else {
+        // Remove active class from body of any other tab
+        // TODO consider refactoring
+        document.querySelector('.panes .' + tab.dataset.pane)
+          .classList.remove('active');
       }
     }
   }
@@ -229,7 +234,8 @@ function start(ChatClient) {
       }
     }
   }
-  redrawTabs();
+
+  redrawTabs();  // for first load
 }
 
 window.onload = function () {
