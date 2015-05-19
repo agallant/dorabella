@@ -233,5 +233,5 @@ function start(ChatClient) {
 }
 
 window.onload = function () {
-  freedom('securechat.json').then(start);
+  freedom('freedom-securechat.json').then(start);
 };
