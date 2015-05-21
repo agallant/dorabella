@@ -132,6 +132,8 @@ ol.tab-strip > li {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;  /* should make long names end with ..., doesn't */
   -webkit-box-align: center;
   -moz-box-align: center;
   -o-box-align: center;
