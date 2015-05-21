@@ -159,10 +159,6 @@ function start(ChatClient) {
       pane = ref[i];
       tab = document.createElement('li');
       tab.dataset.pane = 'pane-' + (i + 1);
-      tabLabel = document.createElement('span');
-      tabLabel.classList.add('label');
-      tabLabel.textContent = pane.id;
-      tab.appendChild(tabLabel);
       if (i > 0) {
         // Add X mark to close tabs, except first status tab
         tabX = document.createElement('span');
@@ -170,6 +166,10 @@ function start(ChatClient) {
         tabX.addEventListener('click', onClick.bind(this, i), true);
         tab.appendChild(tabX); 
       }
+      tabLabel = document.createElement('span');
+      tabLabel.classList.add('label');
+      tabLabel.textContent = pane.id;
+      tab.appendChild(tabLabel);
       tabStrip.tabsRoot.appendChild(tab);
       if (i === 0) {
         tab.classList.add('active');
