@@ -25,7 +25,7 @@ function RadiatusSocialProvider(dispatchEvent, webSocket) {
     this.WS_URL = 'ws://localhost:8082/route/';
     this.WS_QUERYSTR = '?freedomAPI=social';
   } else {
-    this.WS_URL = 'ws://data.radiatus.io/route/';
+    this.WS_URL = 'wss://data.radiatus.io/route/';
     // TBD where this sits in production
     //this.WS_URL = 'ws://localhost:8082/route/';
     this.WS_QUERYSTR = '?freedomAPI=social';

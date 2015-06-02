@@ -1,5 +1,10 @@
-/* globals freedom, console, e2e, exports, Promise, ArrayBuffer, Uint8Array, Uint16Array, DataView */
-/* jslint indent:2,white:true,sloppy:true */
+/*globals freedom, console, e2e, exports, ArrayBuffer, Uint8Array, Uint16Array, DataView*/
+/*jslint indent:2*/
+
+if (typeof Promise === 'undefined' && typeof ES6Promise !== 'undefined') {
+  // Polyfill for karma unit tests
+  Promise = ES6Promise.Promise;
+}
 
 /**
  * Implementation of a crypto-pgp provider for freedom.js
@@ -15,11 +20,11 @@ var mye2e = function(dispatchEvents) {
 
 // These methods implement the actual freedom crypto API
 mye2e.prototype.setup = function(passphrase, userid) {
-  this.pgpUser = userid;
   // userid needs to be in format "name <email>"
-  if (!this.pgpUser.match(/^[^<]*\s<[^>]*>$/)) {
+  if (!userid.match(/^[^<]*\s?<[^>]*>$/)) {
     return Promise.reject(Error('Invalid userid, expected: "name <email>"'));
   }
+  this.pgpUser = userid;
   this.pgpContext.setKeyRingPassphrase(passphrase);
 
   if (e2e.async.Result.getValue(
@@ -31,9 +36,27 @@ mye2e.prototype.setup = function(passphrase, userid) {
   return Promise.resolve();
 };
 
+mye2e.prototype.importKeypair = function(passphrase, userid, privateKey) {
+  this.pgpContext.setKeyRingPassphrase(passphrase);
+  this.importKey(privateKey, passphrase);
+
+  if (e2e.async.Result.getValue(
+        this.pgpContext.searchPrivateKey(userid)).length === 0 ||
+      e2e.async.Result.getValue(
+        this.pgpContext.searchPublicKey(userid)).length === 0) {
+    return Promise.reject(Error('Keypair does not match provided userid'));
+  } else if (!userid.match(/^[^<]*\s?<[^>]*>$/)) {
+    return Promise.reject(Error('Invalid userid, expected: "name <email>"'));
+  } else {
+    this.pgpUser = userid;
+    return Promise.resolve();
+  }
+};
+
 mye2e.prototype.exportKey = function() {
   var serialized = e2e.async.Result.getValue(
     this.pgpContext.searchPublicKey(this.pgpUser))[0].serialized;
+
   return Promise.resolve(e2e.openpgp.asciiArmor.encode(
     'PUBLIC KEY BLOCK', serialized));
 };
@@ -127,13 +150,16 @@ mye2e.prototype.deleteKey = function(uid) {
   return Promise.resolve();
 };
 
-mye2e.prototype.importKey = function(keyStr) {
+mye2e.prototype.importKey = function(keyStr, passphrase) {
+  if (typeof passphrase === 'undefined') {
+    passphrase = '';
+  }
   var pgp = this.pgpContext;
   return new Promise(
     function (F, R) {
       pgp.importKey(
         function (str, f) {
-          f('');
+          f(passphrase);
         }, keyStr).addCallback(F);
     });
 };
@@ -165,19 +191,19 @@ function array2str(a) {
 }
 
 function str2buf(s) {
-  var buffer = new ArrayBuffer(s.length * 2);
-  var view = new Uint16Array(buffer);
+  var buf = new ArrayBuffer(s.length * 2);
+  var view = new Uint16Array(buf);
   for (var i = 0; i < s.length; i++) {
     view[i] = s.charCodeAt(i);
   }
-  return buffer;
+  return buf;
 }
 
 function array2buf(a) {
-  var buffer = new ArrayBuffer(a.length);
-  var byteView = new Uint8Array(buffer);
+  var buf = new ArrayBuffer(a.length);
+  var byteView = new Uint8Array(buf);
   byteView.set(a);
-  return buffer;
+  return buf;
 }
 
 function buf2array(b) {

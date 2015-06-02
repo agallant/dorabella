@@ -1,9 +1,120 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.TabStrip = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-module.exports = _dereq_('./src');
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.TabStrip = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/// <reference path="../typings/tsd.d.ts" />
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var events_1 = require("events");
+var TabStrip = (function (_super) {
+    __extends(TabStrip, _super);
+    function TabStrip(container) {
+        var _this = this;
+        _super.call(this);
+        this._onTabMouseUp = function (event) {
+            var tabElement = event.target;
+            // Only handle middle-click and ignore clicks outside any tab
+            if (event.button !== 1 || tabElement.parentElement !== _this.tabsRoot)
+                return;
+            _this.emit("closeTab", tabElement);
+        };
+        this._onTabMouseDown = function (event) {
+            var tabElement = event.target;
+            // Only handle left-click
+            if (event.button !== 0 || tabElement.parentElement !== _this.tabsRoot)
+                return;
+            _this.emit("activateTab", tabElement);
+            // Tab reordering
+            var tabRect = tabElement.getBoundingClientRect();
+            var leftOffsetFromMouse = tabRect.left - event.clientX;
+            var hasDragged = false;
+            tabElement.classList.add("dragged");
+            // FIXME: Hard-coded border?
+            tabElement.style.width = (tabRect.width + 1) + "px";
+            // NOTE: set/releaseCapture aren"t supported in Chrome yet
+            // hence the conditional call
+            if (tabElement.setCapture != null)
+                tabElement.setCapture();
+            var tabPlaceholderElement = document.createElement("li");
+            tabPlaceholderElement.style.width = tabRect.width + "px";
+            tabPlaceholderElement.className = "drop-placeholder";
+            tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
+            var updateDraggedTab = function (clientX) {
+                var tabsRootRect = _this.tabsRoot.getBoundingClientRect();
+                var tabLeft = Math.max(Math.min(clientX + leftOffsetFromMouse, tabsRootRect.right - tabRect.width), tabsRootRect.left);
+                if (hasDragged || Math.abs(tabLeft - tabRect.left) >= 10) {
+                    hasDragged = true;
+                }
+                else {
+                    tabLeft = tabRect.left;
+                }
+                tabElement.style.left = tabLeft + "px";
+                if (tabLeft < tabPlaceholderElement.getBoundingClientRect().left) {
+                    var otherTabElement = tabPlaceholderElement;
+                    while (true) {
+                        otherTabElement = tabPlaceholderElement.previousSibling;
+                        if (otherTabElement === tabElement)
+                            otherTabElement = otherTabElement.previousSibling;
+                        if (otherTabElement == null)
+                            break;
+                        var otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
+                        if (otherTabCenter < tabLeft)
+                            break;
+                        otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement);
+                    }
+                }
+                else {
+                    var otherTabElement = tabPlaceholderElement;
+                    while (true) {
+                        otherTabElement = tabPlaceholderElement.nextSibling;
+                        if (otherTabElement === tabElement)
+                            otherTabElement = otherTabElement.nextSibling;
+                        if (otherTabElement == null)
+                            break;
+                        var otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
+                        if (tabLeft + tabRect.width < otherTabCenter)
+                            break;
+                        otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement.nextSibling);
+                    }
+                }
+                if (tabPlaceholderElement.nextSibling === tabElement) {
+                    tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
+                }
+            };
+            var onDragTab = function (event) { updateDraggedTab(event.clientX); };
+            var onDropTab = function (event) {
+                // NOTE: set/releaseCapture aren't supported in Chrome yet
+                // hence the conditional call
+                if (tabElement.releaseCapture != null)
+                    tabElement.releaseCapture();
+                if (tabPlaceholderElement.parentElement != null) {
+                    _this.tabsRoot.replaceChild(tabElement, tabPlaceholderElement);
+                }
+                else {
+                    _this.tabsRoot.appendChild(tabElement);
+                }
+                tabElement.classList.remove("dragged");
+                tabElement.style.left = "";
+                tabElement.style.width = "";
+                document.removeEventListener("mousemove", onDragTab);
+                document.removeEventListener("mouseup", onDropTab);
+            };
+            updateDraggedTab(event.clientX);
+            document.addEventListener("mousemove", onDragTab);
+            document.addEventListener("mouseup", onDropTab);
+        };
+        this.tabsRoot = document.createElement("ol");
+        this.tabsRoot.classList.add("tab-strip");
+        container.appendChild(this.tabsRoot);
+        this.tabsRoot.addEventListener("mousedown", this._onTabMouseDown);
+        this.tabsRoot.addEventListener("mouseup", this._onTabMouseUp);
+    }
+    return TabStrip;
+})(events_1.EventEmitter);
+module.exports = TabStrip;
 
-
-
-},{"./src":3}],2:[function(_dereq_,module,exports){
+},{"events":2}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -306,137 +417,5 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],3:[function(_dereq_,module,exports){
-var EventEmitter, TabStrip,
-  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-EventEmitter = _dereq_('events').EventEmitter;
-
-module.exports = TabStrip = (function(superClass) {
-  extend(TabStrip, superClass);
-
-  function TabStrip(container) {
-    this._onTabMouseDown = bind(this._onTabMouseDown, this);
-    this._onTabMouseUp = bind(this._onTabMouseUp, this);
-    TabStrip.__super__.constructor.call(this);
-    this.tabsRoot = document.createElement('ol');
-    this.tabsRoot.classList.add('tab-strip');
-    container.appendChild(this.tabsRoot);
-    this.tabsRoot.addEventListener('mousedown', this._onTabMouseDown);
-    this.tabsRoot.addEventListener('mouseup', this._onTabMouseUp);
-  }
-
-  TabStrip.prototype._onTabMouseUp = function(event) {
-    var tabElement;
-    if (event.button !== 1 || event.target.parentElement !== this.tabsRoot) {
-      return;
-    }
-    tabElement = event.target;
-    this.emit('closeTab', tabElement);
-  };
-
-  TabStrip.prototype._onTabMouseDown = function(event) {
-    var hasDragged, leftOffsetFromMouse, onDragTab, onDropTab, tabElement, tabPlaceholderElement, tabRect, updateDraggedTab;
-    if (event.button !== 0 || event.target.parentElement !== this.tabsRoot) {
-      return;
-    }
-    tabElement = event.target;
-    this.emit('activateTab', tabElement);
-    tabRect = tabElement.getBoundingClientRect();
-    leftOffsetFromMouse = tabRect.left - event.clientX;
-    hasDragged = false;
-    tabElement.classList.add('dragged');
-    tabElement.style.width = (tabRect.width + 1) + "px";
-    if (typeof tabElement.setCapture === "function") {
-      tabElement.setCapture();
-    }
-    tabPlaceholderElement = document.createElement('li');
-    tabPlaceholderElement.style.width = tabRect.width + "px";
-    tabPlaceholderElement.className = 'drop-placeholder';
-    tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
-    updateDraggedTab = (function(_this) {
-      return function(clientX) {
-        var otherTabCenter, otherTabElement, tabLeft, tabsRootRect;
-        tabsRootRect = _this.tabsRoot.getBoundingClientRect();
-        tabLeft = Math.max(Math.min(clientX + leftOffsetFromMouse, tabsRootRect.right - tabRect.width), tabsRootRect.left);
-        if (hasDragged || Math.abs(tabLeft - tabRect.left) >= 10) {
-          hasDragged = true;
-        } else {
-          tabLeft = tabRect.left;
-        }
-        tabElement.style.left = tabLeft + "px";
-        if (tabLeft < tabPlaceholderElement.getBoundingClientRect().left) {
-          otherTabElement = tabPlaceholderElement;
-          while (true) {
-            otherTabElement = tabPlaceholderElement.previousSibling;
-            if (otherTabElement === tabElement) {
-              otherTabElement = otherTabElement.previousSibling;
-            }
-            if (otherTabElement == null) {
-              break;
-            }
-            otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
-            if (otherTabCenter < tabLeft) {
-              break;
-            }
-            otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement);
-          }
-        } else {
-          otherTabElement = tabPlaceholderElement;
-          while (true) {
-            otherTabElement = tabPlaceholderElement.nextSibling;
-            if (otherTabElement === tabElement) {
-              otherTabElement = otherTabElement.nextSibling;
-            }
-            if (otherTabElement == null) {
-              break;
-            }
-            otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
-            if (tabLeft + tabRect.width < otherTabCenter) {
-              break;
-            }
-            otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement.nextSibling);
-          }
-        }
-        if (tabPlaceholderElement.nextSibling === tabElement) {
-          tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
-        }
-      };
-    })(this);
-    onDragTab = (function(_this) {
-      return function(event) {
-        return updateDraggedTab(event.clientX);
-      };
-    })(this);
-    onDropTab = (function(_this) {
-      return function(event) {
-        if (typeof tabElement.releaseCapture === "function") {
-          tabElement.releaseCapture();
-        }
-        if (tabPlaceholderElement.parentElement != null) {
-          _this.tabsRoot.replaceChild(tabElement, tabPlaceholderElement);
-        } else {
-          _this.tabsRoot.appendChild(tabElement);
-        }
-        tabElement.classList.remove('dragged');
-        tabElement.style.left = '';
-        tabElement.style.width = '';
-        document.removeEventListener('mousemove', onDragTab);
-        return document.removeEventListener('mouseup', onDropTab);
-      };
-    })(this);
-    updateDraggedTab(event.clientX);
-    document.addEventListener('mousemove', onDragTab);
-    return document.addEventListener('mouseup', onDropTab);
-  };
-
-  return TabStrip;
-
-})(EventEmitter);
-
-
-
-},{"events":2}]},{},[1])(1)
+},{}]},{},[1])(1)
 });
