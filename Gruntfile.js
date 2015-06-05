@@ -60,6 +60,11 @@ module.exports = function(grunt) {
       hex2words: {
         files: {
           'build/hex2words.js': [require.resolve('hex2words')]
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'hex2words'
+          }
         }
       }
     },
