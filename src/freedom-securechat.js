@@ -25,7 +25,7 @@ var Chat = function (dispatchEvent) {
   this.myClientState = null;
   this.social = freedom.socialprovider();
   this.pgp = freedom.pgpprovider();
-  this.publicKey = '';
+  this.publicKey = null;
 
   this.boot();
 };
@@ -54,10 +54,10 @@ Chat.prototype.boot = function () {
       this.pgp.exportKey().then(
         function (publicKey) {
           this.publicKey = publicKey;
-          this.dispatchEvent('export-publicKey', publicKey);
+          this.dispatchEvent('export-publicKey', publicKey.key);
           // Explicitly send to current clients
           for (var client in this.clientList) {
-            this.social.sendMessage(client, this.publicKey);
+            this.social.sendMessage(client, this.publicKey.key);
           }
           this.myClientState = ret;
           logger.log('onLogin', this.myClientState);
@@ -134,7 +134,7 @@ Chat.prototype.boot = function () {
         if (this.publicKey) {
           // Only send public key if it is initialized
           // (onClientState can happpen before boot finishes)
-          this.social.sendMessage(data.userId, this.publicKey);
+          this.social.sendMessage(data.userId, this.publicKey.key);
         }
       }
       //If mine, send to the page
