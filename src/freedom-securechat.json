@@ -19,6 +19,9 @@
       "api": "crypto"
     }
   },
+  "permissions": [
+    "core.storage"
+  ],
   "provides": ["chat"],
   "default": "chat",
   "api": {

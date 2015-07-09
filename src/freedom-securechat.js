@@ -1,13 +1,5 @@
 /*jslint sloppy:true */
 /*globals freedom */
-/**
- * Chat demo backend.
- * Because the Social API provides message passing primitives,
- * this backend simply forwards messages between the front-end and our Social provider
- * Note that you should be able to plug-and-play a variety of social providers
- * and still have a working demo
- *
- **/
 
 // Create a logger for this module.
 // TODO: allow loggers to be made synchronously.
@@ -19,7 +11,7 @@ freedom.core().getLogger('[Chat Backend]').then(function (log) {
 var Chat = function (dispatchEvent) {
   this.dispatchEvent = dispatchEvent;
 
-  this.userList = {};    //Keep track of the roster
+  this.userList = {};  // Keep track of the roster
   this.clientList = {};
   this.keyList = {};
   this.myClientState = null;
@@ -50,29 +42,33 @@ Chat.prototype.boot = function () {
     rememberLogin: false
   }).then(
     function (ret) {
-      this.pgp.setup('', ret.userId + ' <DorabellaUser@freedomjs.org>');
-      this.pgp.exportKey().then(
-        function (publicKey) {
-          this.publicKey = publicKey;
-          this.dispatchEvent('export-publicKey', publicKey.key);
-          // Explicitly send to current clients
-          for (var client in this.clientList) {
-            this.social.sendMessage(client, this.publicKey.key);
-          }
-          this.myClientState = ret;
-          logger.log('onLogin', this.myClientState);
-          if (ret.status === this.social.STATUS.ONLINE) {
-            this.dispatchEvent('recv-uid', ret.clientId);
-            this.dispatchEvent('recv-status', "online");
-          } else {
-            this.dispatchEvent('recv-status', "offline");
-          }
-          this.updateBuddyList();
-        }.bind(this)).bind(this);
+      // TODO custom PGP user ids w/persistence along w/key
+      //this.pgp.setup('', ret.userId + ' <DorabellaUser@freedomjs.org>').then(
+      this.pgp.setup('', '<DorabellaUser@freedomjs.org>').then(
+        function () {
+          this.pgp.exportKey().then(
+            function (publicKey) {
+              this.publicKey = publicKey;
+              this.dispatchEvent('export-publicKey', publicKey.key);
+              // Explicitly send to current clients
+              for (var client in this.clientList) {
+                this.social.sendMessage(client, this.publicKey.key);
+              }
+              this.myClientState = ret;
+              logger.log('onLogin', this.myClientState);
+              if (ret.status === this.social.STATUS.ONLINE) {
+                this.dispatchEvent('recv-uid', ret.clientId);
+                this.dispatchEvent('recv-status', "online");
+              } else {
+                this.dispatchEvent('recv-status', "offline");
+              }
+              this.updateBuddyList();
+            }.bind(this));
+        }.bind(this));
     }.bind(this), function (err) {
-                    logger.log('Log In Failed', err);
-                    this.dispatchEvent('recv-err', err);
-                  }.bind(this));
+      logger.log('Log In Failed', err);
+      this.dispatchEvent('recv-err', err);
+    }.bind(this));
 
   /**
    * on an 'onMessage' event from the Social provider
@@ -94,8 +90,8 @@ Chat.prototype.boot = function () {
           }.bind(this)).then(
             function (decryptResults) {
               if (decryptResults.signedBy[0] !==
-                  data.from.userId +
-                  ' <DorabellaUser@freedomjs.org>') {
+                  //data.from.userId +  // TODO: persist userId with key
+                  '<DorabellaUser@freedomjs.org>') {
                 data.message = 'BAD SIGNATURE, discarding';
               } else {
                 data.message = ab2str(decryptResults.data);
