@@ -66,16 +66,16 @@ store.prototype.deserialize = function(value) {
   }
 };
 
-
 store.prototype.initialize = function() {
   this.memStorage = store.preparedMem;
 };
 
 store.preparedMem = {};
 
+// IMPORTANT - this function must be called and resolved before instantiating
+// a store object, otherwise async nastiness w/freedom localStorage occurs
 store.prepareFreedom = function() {
-  freedomStorage = freedom['core.storage']();
-  return freedomStorage.get('UserKeyRing').then(function(value) {
+  return freedom['core.storage']().get('UserKeyRing').then(function(value) {
     if (value) {
       store.preparedMem.UserKeyRing = value;
     }

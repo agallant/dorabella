@@ -25,23 +25,36 @@ mye2e.prototype.setup = function(passphrase, userid) {
     return Promise.reject(Error('Invalid userid, expected: "name <email>"'));
   }
   this.pgpUser = userid;
-  this.pgpContext.setKeyRingPassphrase(passphrase);
+  var scope = this;  // jasmine tests fail w/bind approach
+  return store.prepareFreedom().then(function() {
+    scope.pgpContext.setKeyRingPassphrase(passphrase);
+    if (e2e.async.Result.getValue(
+      scope.pgpContext.searchPrivateKey(scope.pgpUser)).length === 0) {
+      var username = scope.pgpUser.slice(0, userid.lastIndexOf('<')).trim();
+      var email = scope.pgpUser.slice(userid.lastIndexOf('<') + 1, -1);
+      scope.generateKey(username, email);
+    }
+  });//.bind(this));  // TODO: switch back to using this once jasmine works
+};
 
-  if (e2e.async.Result.getValue(
-    this.pgpContext.searchPrivateKey(this.pgpUser)).length === 0) {
-    var username = this.pgpUser.slice(0, userid.lastIndexOf('<')).trim();
-    var email = this.pgpUser.slice(userid.lastIndexOf('<') + 1, -1);
-    this.generateKey(username, email);
-  }
-  return Promise.resolve();
+mye2e.prototype.clear = function() {
+  // e2e can only store one private key in LocalStorage
+  // Attempting to set another will result in an HMAC error
+  // So, make sure to clear before doing so
+  // See googstorage.js for details on how storage works
+  return store.prepareFreedom().then(function() {
+    var storage = new store();
+    storage.clear();
+  });
 };
 
 mye2e.prototype.importKeypair = function(passphrase, userid, privateKey) {
+  this.clear();
   this.pgpContext.setKeyRingPassphrase(passphrase);
   this.importKey(privateKey, passphrase);
 
   if (e2e.async.Result.getValue(
-        this.pgpContext.searchPrivateKey(userid)).length === 0 ||
+    this.pgpContext.searchPrivateKey(userid)).length === 0 ||
       e2e.async.Result.getValue(
         this.pgpContext.searchPublicKey(userid)).length === 0) {
     return Promise.reject(Error('Keypair does not match provided userid'));
@@ -54,11 +67,14 @@ mye2e.prototype.importKeypair = function(passphrase, userid, privateKey) {
 };
 
 mye2e.prototype.exportKey = function() {
-  var serialized = e2e.async.Result.getValue(
-    this.pgpContext.searchPublicKey(this.pgpUser))[0].serialized;
+  var keyResult = e2e.async.Result.getValue(
+    this.pgpContext.searchPublicKey(this.pgpUser));
+  var serialized = keyResult[0].serialized;
 
-  return Promise.resolve(e2e.openpgp.asciiArmor.encode(
-    'PUBLIC KEY BLOCK', serialized));
+  return Promise.resolve({
+    "key": e2e.openpgp.asciiArmor.encode(
+      'PUBLIC KEY BLOCK', serialized),
+    "fingerprint": keyResult[0].key.fingerprintHex });
 };
 
 mye2e.prototype.signEncrypt = function(data, encryptKey, sign) {
@@ -66,7 +82,7 @@ mye2e.prototype.signEncrypt = function(data, encryptKey, sign) {
     sign = true;
   }
   var result = e2e.async.Result.getValue(
-    this.pgpContext.importKey(function (str, f) {
+    this.pgpContext.importKey(function(str, f) {
       f('');
     }, encryptKey));
   var keys = e2e.async.Result.getValue(
@@ -80,11 +96,11 @@ mye2e.prototype.signEncrypt = function(data, encryptKey, sign) {
   }
   var pgp = this.pgpContext;
   return new Promise(
-    function(F, R) {
+    function(resolve, reject) {
       pgp.encryptSign(buf2array(data), [], keys, [], signKey).addCallback(
         function (ciphertext) {
-          F(array2buf(ciphertext));
-        }).addErrback(R);
+          resolve(array2buf(ciphertext));
+        }).addErrback(reject);
     });
 };
 
@@ -97,20 +113,20 @@ mye2e.prototype.verifyDecrypt = function(data, verifyKey) {
   var byteView = new Uint8Array(data);
   var pgp = this.pgpContext;
   return new Promise(
-    function (F, R) {
+    function(resolve, reject) {
       pgp.verifyDecrypt(function () {
         return '';
       }, e2e.openpgp.asciiArmor.encode('MESSAGE', byteView)).addCallback(
-        function (r) {
+        function (result) {
           var signed = null;
           if (verifyKey) {
-            signed = r.verify.success[0].uids;
+            signed = result.verify.success[0].uids;
           }
-          F({
-            data: array2buf(r.decrypt.data),
+          resolve({
+            data: array2buf(result.decrypt.data),
             signedBy: signed
           });
-        }).addErrback(R);
+        }).addErrback(reject);
     });
 };
 
@@ -132,16 +148,16 @@ mye2e.prototype.dearmor = function(data) {
 mye2e.prototype.generateKey = function(name, email) {
   var pgp = this.pgpContext;
   return new Promise(
-    function (resolve, reject) {
+    function(resolve, reject) {
       var expiration = Date.now() / 1000 + (3600 * 24 * 365);
       pgp.generateKey('ECDSA', 256, 'ECDH', 256, name, '', email, expiration).
         addCallback(function (keys) {
-        if (keys.length == 2) {
-          resolve();
-        } else {
-          reject(new Error('Failed to generate key'));
-        }
-      });
+          if (keys.length == 2) {
+            resolve();
+          } else {
+            reject(new Error('Failed to generate key'));
+          }
+        });
     });
 };
 
@@ -156,27 +172,27 @@ mye2e.prototype.importKey = function(keyStr, passphrase) {
   }
   var pgp = this.pgpContext;
   return new Promise(
-    function (F, R) {
+    function(resolve, reject) {
       pgp.importKey(
-        function (str, f) {
-          f(passphrase);
-        }, keyStr).addCallback(F);
+        function(str, continuation) {
+          continuation(passphrase);
+        }, keyStr).addCallback(resolve).addErrback(reject);
     });
 };
 
 mye2e.prototype.searchPrivateKey = function(uid) {
   var pgp = this.pgpContext;
   return new Promise(
-    function (F, R) {
-      pgp.searchPrivateKey(uid).addCallback(F);
+    function(resolve, reject) {
+      pgp.searchPrivateKey(uid).addCallback(resolve).addErrback(reject);
     });
 };
 
 mye2e.prototype.searchPublicKey = function(uid) {
   var pgp = this.pgpContext;
   return new Promise(
-    function (F, R) {
-      pgp.searchPublicKey(uid).addCallback(F);
+    function(resolve, reject) {
+      pgp.searchPublicKey(uid).addCallback(resolve).addErrback(reject);
     });
 };
 
