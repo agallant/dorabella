@@ -6,6 +6,7 @@ var path = require('path');
 var pgpPath = path.dirname(require.resolve('freedom-pgp-e2e/package.json'));
 var freedomPath = path.dirname(require.resolve('freedom'));
 var providersPath = path.dirname(require.resolve('radiatus-providers'));
+var hexPath = path.dirname(require.resolve('hex2words'));
 var tabPath = path.dirname(require.resolve('tab-strip'));
 
 module.exports = function(grunt) {
@@ -48,10 +49,23 @@ module.exports = function(grunt) {
         expand: true
       },
       dist: {
-	cwd: 'build/',
-	src: ['**/**'],
-	dest: 'dist/',
-	expand: true
+        cwd: 'build/',
+        src: ['**/**'],
+        dest: 'dist/',
+        expand: true
+      }
+    },
+
+    browserify: {
+      hex2words: {
+        files: {
+          'build/hex2words.js': [require.resolve('hex2words')]
+        },
+        options: {
+          browserifyOptions: {
+            standalone: 'hex2words'
+          }
+        }
       }
     },
 
@@ -75,23 +89,24 @@ module.exports = function(grunt) {
 
     buildcontrol: {
       options: {
-	dir: 'dist/',
-	commit: true,
-	push: true,
-	message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
-	  '%sourceBranch%'
+        dir: 'dist/',
+        commit: true,
+        push: true,
+        message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
+          '%sourceBranch%'
       },
       pages: {
-	options: {
+        options: {
           remote: 'https://github.com/soycode/dorabella.git',
           branch: 'gh-pages'
-	}
+        }
       }
     },
 
     clean: ['build/']
   });
 
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-build-control');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
@@ -100,17 +115,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'jshint',
+    'browserify',
     'copy'
-  ]);
-  grunt.registerTask('test', [
-    'build',
-    'jasmine_node',
-    'jasmine_chromeapp',
-    'karma'
-  ]);
-  grunt.registerTask('ci', [
-    'build',
-    'jasmine_node'
   ]);
   grunt.registerTask('demo', [
     'build',
@@ -121,8 +127,7 @@ module.exports = function(grunt) {
     'buildcontrol'
   ]);
   grunt.registerTask('default', [
-    'build',
-    'karma:phantom'
+    'build'
   ]);
 
-}
+};
