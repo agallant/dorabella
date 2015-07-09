@@ -49,10 +49,10 @@ module.exports = function(grunt) {
         expand: true
       },
       dist: {
-	      cwd: 'build/',
-	      src: ['**/**'],
-	      dest: 'dist/',
-	      expand: true
+        cwd: 'build/',
+        src: ['**/**'],
+        dest: 'dist/',
+        expand: true
       }
     },
 
@@ -89,17 +89,17 @@ module.exports = function(grunt) {
 
     buildcontrol: {
       options: {
-	      dir: 'dist/',
-	      commit: true,
-	      push: true,
-	      message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
-	        '%sourceBranch%'
+        dir: 'dist/',
+        commit: true,
+        push: true,
+        message: 'Built %sourceName% from commit %sourceCommit% on branch ' +
+          '%sourceBranch%'
       },
       pages: {
-	      options: {
+        options: {
           remote: 'https://github.com/soycode/dorabella.git',
           branch: 'gh-pages'
-	      }
+        }
       }
     },
 
