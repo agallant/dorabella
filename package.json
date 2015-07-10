@@ -19,6 +19,7 @@
     "url": "https://github.com/soycode/dorabella/issues"
   },
   "homepage": "https://github.com/soycode/dorabella",
+  "license": "Apache-2.0",
   "devDependencies": {
     "freedom": "^0.6.25",
     "freedom-pgp-e2e": "^0.5.1",
