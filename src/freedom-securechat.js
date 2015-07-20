@@ -11,11 +11,10 @@ freedom.core().getLogger('[Chat Backend]').then(function (log) {
 var Chat = function (dispatchEvent) {
   this.dispatchEvent = dispatchEvent;
 
-  this.userId = null;
   this.userList = {};  // Keep track of the roster
   this.clientList = {};
   this.keyList = {};
-  this.myClientState = null;
+  this.clientState = null;
   this.social = new freedom.socialprovider();
   this.pgp = new freedom.pgpprovider();
   this.publicKey = null;
@@ -34,24 +33,35 @@ Chat.prototype.send = function (to, message) {
       }.bind(this)).bind(this);
 };
 
+Chat.prototype.clearKeys = function () {
+  this.pgp.clear();
+};
+
 Chat.prototype.boot = function () {
   // TODO persist w/custom PGP user id
-  this.pgp.clear().then(
+  /*this.pgp.clear().then(
     function() {
-      return this.social.login({
-        agent: 'dorabella',
-        version: '0.1',
-        url: '',
-        interactive: true,
-        rememberLogin: false
-      });
+    return this.social.login({
+    agent: 'dorabella',
+    version: '0.1',
+    url: '',
+    interactive: true,
+    rememberLogin: false
+    });
+    }.bind(this))*/
+  this.social.login({
+    agent: 'dorabella',
+    version: '0.1',
+    url: '',
+    interactive: true,
+    rememberLogin: false
+  }).then(
+    function(ret) {
+      console.log(ret);
+      this.clientState = ret;
+      return this.pgp.setup('',// ret.userId +
+                            '<DorabellaUser@freedomjs.org>');
     }.bind(this))
-    .then(
-      function(ret) {
-        this.userId = ret.userId;
-        return this.pgp.setup('', this.userId +
-                              ' <DorabellaUser@freedomjs.org>');
-      }.bind(this))
     .then(this.pgp.exportKey)
     .then(
       function(publicKey) {
@@ -61,10 +71,9 @@ Chat.prototype.boot = function () {
         for (var client in this.clientList) {
           this.social.sendMessage(client, this.publicKey.key);
         }
-        this.myClientState = ret;
-        logger.log('onLogin', this.myClientState);
-        if (ret.status === this.social.STATUS.ONLINE) {
-          this.dispatchEvent('recv-uid', ret.clientId);
+        logger.log('onLogin', this.clientState);
+        if (this.clientState.status === this.social.STATUS.ONLINE) {
+          this.dispatchEvent('recv-uid', this.clientState.clientId);
           this.dispatchEvent('recv-status', "online");
         } else {
           this.dispatchEvent('recv-status', "offline");
@@ -143,8 +152,8 @@ Chat.prototype.boot = function () {
         }
       }
       //If mine, send to the page
-      if (this.myClientState !== null &&
-          data.clientId === this.myClientState.clientId) {
+      if (this.clientState !== null &&
+          data.clientId === this.clientState.clientId) {
         if (data.status === this.social.STATUS.ONLINE) {
           this.dispatchEvent('recv-status', "online");
         } else {

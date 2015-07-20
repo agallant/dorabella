@@ -28,6 +28,7 @@
   "api": {
     "chat": {
       "send": {"type": "method", "value": ["string", "string"]},
+      "clearKeys": {"type": "method", "value": []},
       "export-publicKey": {"type": "event", "value": "string"},
       "recv-status": {"type": "event", "value": "string"},
       "recv-err": {"type": "event", "value": {"message": "string"}},
