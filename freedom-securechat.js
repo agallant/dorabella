@@ -14,9 +14,9 @@ var Chat = function (dispatchEvent) {
   this.userList = {};  // Keep track of the roster
   this.clientList = {};
   this.keyList = {};
-  this.myClientState = null;
-  this.social = freedom.socialprovider();
-  this.pgp = freedom.pgpprovider();
+  this.clientState = null;
+  this.social = new freedom.socialprovider();
+  this.pgp = new freedom.pgpprovider();
   this.publicKey = null;
 
   this.boot();
@@ -33,42 +33,59 @@ Chat.prototype.send = function (to, message) {
       }.bind(this)).bind(this);
 };
 
+Chat.prototype.clearKeys = function () {
+  this.pgp.clear();
+};
+
 Chat.prototype.boot = function () {
+  // TODO persist w/custom PGP user id
+  /*this.pgp.clear().then(
+    function() {
+    return this.social.login({
+    agent: 'dorabella',
+    version: '0.1',
+    url: '',
+    interactive: true,
+    rememberLogin: false
+    });
+    }.bind(this))*/
   this.social.login({
-    agent: 'chatdemo',
+    agent: 'dorabella',
     version: '0.1',
     url: '',
     interactive: true,
     rememberLogin: false
   }).then(
-    function (ret) {
-      // TODO custom PGP user ids w/persistence along w/key
-      //this.pgp.setup('', ret.userId + ' <DorabellaUser@freedomjs.org>').then(
-      this.pgp.setup('', '<DorabellaUser@freedomjs.org>').then(
-        function () {
-          this.pgp.exportKey().then(
-            function (publicKey) {
-              this.publicKey = publicKey;
-              this.dispatchEvent('export-publicKey', publicKey.key);
-              // Explicitly send to current clients
-              for (var client in this.clientList) {
-                this.social.sendMessage(client, this.publicKey.key);
-              }
-              this.myClientState = ret;
-              logger.log('onLogin', this.myClientState);
-              if (ret.status === this.social.STATUS.ONLINE) {
-                this.dispatchEvent('recv-uid', ret.clientId);
-                this.dispatchEvent('recv-status', "online");
-              } else {
-                this.dispatchEvent('recv-status', "offline");
-              }
-              this.updateBuddyList();
-            }.bind(this));
-        }.bind(this));
-    }.bind(this), function (err) {
-      logger.log('Log In Failed', err);
-      this.dispatchEvent('recv-err', err);
-    }.bind(this));
+    function(ret) {
+      console.log(ret);
+      this.clientState = ret;
+      return this.pgp.setup('',// ret.userId +
+                            '<DorabellaUser@freedomjs.org>');
+    }.bind(this))
+    .then(this.pgp.exportKey)
+    .then(
+      function(publicKey) {
+        this.publicKey = publicKey;
+        this.dispatchEvent('export-publicKey', publicKey.key);
+        // Explicitly send to current clients
+        for (var client in this.clientList) {
+          this.social.sendMessage(client, this.publicKey.key);
+        }
+        logger.log('onLogin', this.clientState);
+        if (this.clientState.status === this.social.STATUS.ONLINE) {
+          this.dispatchEvent('recv-uid', this.clientState.clientId);
+          this.dispatchEvent('recv-status', "online");
+        } else {
+          this.dispatchEvent('recv-status', "offline");
+        }
+        this.updateBuddyList();
+      }.bind(this)).catch(function(e) {
+        if (e.message) {
+          e = e.message;
+        }
+        logger.log('Log In Failed', e);
+        this.dispatchEvent('recv-err', e);
+      }.bind(this));
 
   /**
    * on an 'onMessage' event from the Social provider
@@ -107,12 +124,13 @@ Chat.prototype.boot = function () {
   /**
    * On user profile changes, let's keep track of them
    **/
-  this.social.on('onUserProfile',
-                 function (data) {
-                   // Save the user
-                   this.userList[data.userId] = data;
-                   this.updateBuddyList();
-                 }.bind(this));
+  this.social.on(
+    'onUserProfile',
+    function (data) {
+      // Save the user
+      this.userList[data.userId] = data;
+      this.updateBuddyList();
+    }.bind(this));
 
   /**
    * On newly online or offline clients, let's update the roster
@@ -134,8 +152,8 @@ Chat.prototype.boot = function () {
         }
       }
       //If mine, send to the page
-      if (this.myClientState !== null &&
-          data.clientId === this.myClientState.clientId) {
+      if (this.clientState !== null &&
+          data.clientId === this.clientState.clientId) {
         if (data.status === this.social.STATUS.ONLINE) {
           this.dispatchEvent('recv-status', "online");
         } else {
