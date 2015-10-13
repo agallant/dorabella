@@ -6,7 +6,6 @@ var path = require('path');
 var pgpPath = path.dirname(require.resolve('freedom-pgp-e2e/package.json'));
 var freedomPath = path.dirname(require.resolve('freedom'));
 var providersPath = path.dirname(require.resolve('radiatus-providers'));
-var hexPath = path.dirname(require.resolve('hex2words'));
 var tabPath = path.dirname(require.resolve('tab-strip'));
 
 module.exports = function(grunt) {
