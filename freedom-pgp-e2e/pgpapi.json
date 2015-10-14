@@ -5,6 +5,7 @@
     "script": [
       "end-to-end.compiled.js",
       "googstorage.js",
+      "hex2words.js",
       "e2e.js"
     ]
   },
@@ -37,7 +38,7 @@
       },
 
       "clear": {
-        "_comment": "Clear local storage, resetting priavte key",
+        "_comment": "Clear local storage, resetting private key",
         "type": "method",
         "value": [],
         "ret": [],
@@ -56,7 +57,16 @@
         "_comment": "Export your public key and fingerprint to share/check",
         "type": "method",
         "value": [],
-        "ret": { "key": "string", "fingerprint": "string" },
+        "ret": { "key": "string", "fingerprint": "string",
+                 "words": ["array", "string"] },
+        "err": { "errcode": "string", "message": "string" }
+      },
+
+      "getFingerprint": {
+        "_comment": "Calculate and return 20-byte public key fingerprint",
+        "type": "method",
+        "value": ["string"],
+        "ret": { "fingerprint": "string", "words": ["array", "string"] },
         "err": { "errcode": "string", "message": "string" }
       },
 
