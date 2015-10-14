@@ -55,19 +55,6 @@ module.exports = function(grunt) {
       }
     },
 
-    browserify: {
-      hex2words: {
-        files: {
-          'build/hex2words.js': [require.resolve('hex2words')]
-        },
-        options: {
-          browserifyOptions: {
-            standalone: 'hex2words'
-          }
-        }
-      }
-    },
-
     jshint: {
       all: ['src/*.js', 'spec/*.js', 'spec/integration/*.js'],
       options: {
@@ -105,7 +92,6 @@ module.exports = function(grunt) {
     clean: ['build/']
   });
 
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-build-control');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
@@ -114,7 +100,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'jshint',
-    'browserify',
     'copy'
   ]);
   grunt.registerTask('demo', [
