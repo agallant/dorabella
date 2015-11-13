@@ -62,6 +62,28 @@ module.exports = function(grunt) {
       }
     },
 
+    karma: {
+      options: {
+        configFile: 'karma.conf.js'
+      },
+      browsers: {
+        singleRun: true,
+        autoWatch: false
+      },
+      watch: {
+        singleRun: false,
+        autoWatch: true,
+        reporters: ['progress', 'story'],
+        preprocessors: {},
+        coverageReporter: {}
+      },
+      phantom: {
+        browsers: ['PhantomJS'],
+        singleRun: true,
+        autoWatch: false
+      }
+    },
+
     connect: {
       demo: {
         options: {
@@ -97,10 +119,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('build', [
     'jshint',
     'copy'
+  ]);
+  grunt.registerTask('test', [
+    'build',
+    'karma'
   ]);
   grunt.registerTask('demo', [
     'build',
