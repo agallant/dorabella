@@ -4,9 +4,13 @@
 // Create a logger for this module.
 // TODO: allow loggers to be made synchronously.
 var logger;
-freedom.core().getLogger('[Chat Backend]').then(function (log) {
-  logger = log;
-});
+if (typeof freedom !== 'undefined') {
+  freedom.core().getLogger('[Chat Backend]').then(function (log) {
+    logger = log;
+  });
+} else {
+  logger = console;
+}
 
 var Chat = function (dispatchEvent) {
   this.dispatchEvent = dispatchEvent;
@@ -193,4 +197,11 @@ function str2ab(str) {
   return buf;
 }
 
-freedom().providePromises(Chat);
+if (typeof freedom !== 'undefined') {
+  freedom().providePromises(Chat);
+}
+
+if (typeof exports !== 'undefined') {
+  exports.provider = Chat;
+  exports.name = 'chat';
+}

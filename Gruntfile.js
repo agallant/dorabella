@@ -84,6 +84,20 @@ module.exports = function(grunt) {
       }
     },
 
+    browserify: {
+      jasmine_unit: {
+        files: {
+          'build/spec-unit.js': 'spec/freedom-securechat.spec.js'
+        }
+      },
+      freedom_frame: {
+        // Needed to run freedom in phantomjs context for unit tests
+        files: {
+          'build/freedom.frame.js': freedomPath + '/src/util/frameEntry.js'
+        }
+      }
+    },
+
     connect: {
       demo: {
         options: {
@@ -114,6 +128,7 @@ module.exports = function(grunt) {
     clean: ['build/']
   });
 
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-build-control');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
@@ -127,7 +142,9 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('test', [
     'build',
-    'karma'
+    'browserify',
+    'karma:phantom',
+    'karma:browsers'
   ]);
   grunt.registerTask('demo', [
     'build',

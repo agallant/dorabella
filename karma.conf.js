@@ -18,10 +18,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      //'node_modules/es6-promise/dist/es6-promise.min.js',  // es6 promises
-      'build/freedom-pgp-e2e/*.js',  // to coerce loading first
-      'build/*.js',
-      'spec/*.js'
+      require.resolve('es5-shim'),
+      require.resolve('es6-promise'),
+      //'build/freedom-pgp-e2e/*.js',  // to coerce loading first
+      //'build/freedom.frame.js',
+      'build/freedom-securechat.js',
+      'build/spec-unit.js',
+      { pattern: 'build/freedom.frame.js', included: false }
     ],
 
     // list of files to exclude
