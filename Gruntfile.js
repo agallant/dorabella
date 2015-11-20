@@ -89,12 +89,6 @@ module.exports = function(grunt) {
         files: {
           'build/spec-unit.js': 'spec/freedom-securechat.spec.js'
         }
-      },
-      freedom_frame: {
-        // Needed to run freedom in phantomjs context for unit tests
-        files: {
-          'build/freedom.frame.js': freedomPath + '/src/util/frameEntry.js'
-        }
       }
     },
 

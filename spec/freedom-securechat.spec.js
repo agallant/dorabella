@@ -10,15 +10,20 @@ describe('freedom-securechat', function () {
   var chatClient;
 
   beforeEach(function () {
+    var social = testUtil.getApis().get("social").definition;
     freedom = {
       'socialprovider': testUtil.mockIface([
         ['login', 'value'],
-        ['on', 'value']
+        ['on', 'value'],
+        ['STATUS', social.STATUS.value],
+        ['ERRCODE', social.ERRCODE.value]
       ]),
-      'pgpprovider': testUtil.mockIface([]),
+      'pgpprovider': testUtil.mockIface([
+        ['setup', 'vaue']
+      ]),
       chat: testUtil.mockIface([])
     };
-    chatClient = new Chat();
+    chatClient = new Chat(jasmine.createSpy('chatDispatch'));
   });
 
   it('makes a chat client', function(done) {

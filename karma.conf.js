@@ -20,11 +20,8 @@ module.exports = function(config) {
     files: [
       require.resolve('es5-shim'),
       require.resolve('es6-promise'),
-      //'build/freedom-pgp-e2e/*.js',  // to coerce loading first
-      //'build/freedom.frame.js',
       'build/freedom-securechat.js',
-      'build/spec-unit.js',
-      { pattern: 'build/freedom.frame.js', included: false }
+      'build/spec-unit.js'
     ],
 
     // list of files to exclude
