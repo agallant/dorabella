@@ -19,15 +19,27 @@ describe('freedom-securechat', function () {
         ['ERRCODE', social.ERRCODE.value]
       ]),
       'pgpprovider': testUtil.mockIface([
-        ['setup', 'vaue']
-      ]),
-      chat: testUtil.mockIface([])
+        ['setup', 'vaue'],
+        ['clear', 'value'],
+        ['importKeypair', 'value'],
+        ['exportKey', 'value'],
+        ['getFingerprint', 'value'],
+        ['signEncrypt', 'value'],
+        ['verifyDecrypt', 'value'],
+        ['armor', 'value'],
+        ['dearmor', 'value']
+      ])
     };
     chatClient = new Chat(jasmine.createSpy('chatDispatch'));
   });
 
-  it('makes a chat client', function(done) {
+  it('logs in', function(done) {
     expect(chatClient).toBeDefined();
+    done();
+  });
+
+  it('sends messages', function(done) {
+    chatClient.send('recipient', 'Hello world!');
     done();
   });
 });
