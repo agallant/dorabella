@@ -146,10 +146,12 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('deploy', [
     'build',
+    'test',
     'buildcontrol'
   ]);
   grunt.registerTask('default', [
-    'build'
+    'build',
+    'karma:phantom'
   ]);
 
 };

@@ -7,7 +7,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 describe('freedom-securechat', function () {
 
   var testUtil = require('../node_modules/freedom/spec/util');
-  var chatClient;
+  var chatClient, chatDispatch;
 
   beforeEach(function () {
     var social = testUtil.getApis().get("social").definition;
@@ -15,14 +15,15 @@ describe('freedom-securechat', function () {
       'socialprovider': testUtil.mockIface([
         ['login', 'value'],
         ['on', 'value'],
+        ['sendMessage', 'value'],
         ['STATUS', social.STATUS.value],
         ['ERRCODE', social.ERRCODE.value]
       ]),
       'pgpprovider': testUtil.mockIface([
-        ['setup', 'vaue'],
+        ['setup', 'value'],
         ['clear', 'value'],
         ['importKeypair', 'value'],
-        ['exportKey', 'value'],
+        ['exportKey', 'fakepublickey'],
         ['getFingerprint', 'value'],
         ['signEncrypt', 'value'],
         ['verifyDecrypt', 'value'],
@@ -30,15 +31,22 @@ describe('freedom-securechat', function () {
         ['dearmor', 'value']
       ])
     };
-    chatClient = new Chat(jasmine.createSpy('chatDispatch'));
+    chatDispatch = jasmine.createSpy('chatDispatch');
+    chatClient = new Chat(chatDispatch);
+    //chatClient.userList.recipient = 'recipient';
+    //chatClient.keyList.recipient = 'fakekey';
   });
 
   it('logs in', function(done) {
+    expect(chatDispatch).toHaveBeenCalled();
+    expect(chatDispatch.calls.mostRecent().args).toEqual([
+      'export-publicKey', 'fakepublickey']);
     expect(chatClient).toBeDefined();
     done();
   });
 
-  it('sends messages', function(done) {
+  xit('sends messages', function(done) {
+    // mocking currently inadequate for this test
     chatClient.send('recipient', 'Hello world!');
     done();
   });
