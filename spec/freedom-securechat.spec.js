@@ -13,7 +13,7 @@ describe('freedom-securechat', function () {
     var social = testUtil.getApis().get("social").definition;
     freedom = {
       'socialprovider': testUtil.mockIface([
-        ['login', 'value'],
+        ['login', {clientId: 'testuser'}],
         ['on', 'value'],
         ['sendMessage', 'value'],
         ['STATUS', social.STATUS.value],
@@ -23,7 +23,7 @@ describe('freedom-securechat', function () {
         ['setup', 'value'],
         ['clear', 'value'],
         ['importKeypair', 'value'],
-        ['exportKey', 'fakepublickey'],
+        ['exportKey', {key: 'fakepublickey'}],
         ['getFingerprint', 'value'],
         ['signEncrypt', 'value'],
         ['verifyDecrypt', 'value'],
@@ -38,11 +38,17 @@ describe('freedom-securechat', function () {
   });
 
   it('logs in', function(done) {
-    expect(chatDispatch).toHaveBeenCalled();
-    expect(chatDispatch.calls.mostRecent().args).toEqual([
-      'export-publicKey', 'fakepublickey']);
     expect(chatClient).toBeDefined();
-    done();
+    setTimeout(function () {
+      // Wait 2 seconds for login to finish before doing expects
+      expect(chatDispatch).toHaveBeenCalled();
+      var calls = chatDispatch.calls.all();
+      expect(calls[0].args).toEqual(['export-publicKey', 'fakepublickey']);
+      expect(calls[1].args).toEqual(['recv-uid', 'testuser']);
+      expect(calls[2].args).toEqual(['recv-status', 'online']);
+      expect(calls[3].args).toEqual(['recv-buddylist', {}]);
+      done();
+    }, 2000);
   });
 
   xit('sends messages', function(done) {
