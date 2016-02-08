@@ -1,120 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.TabStrip = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/// <reference path="../typings/tsd.d.ts" />
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var events_1 = require("events");
-var TabStrip = (function (_super) {
-    __extends(TabStrip, _super);
-    function TabStrip(container) {
-        var _this = this;
-        _super.call(this);
-        this._onTabMouseUp = function (event) {
-            var tabElement = event.target;
-            // Only handle middle-click and ignore clicks outside any tab
-            if (event.button !== 1 || tabElement.parentElement !== _this.tabsRoot)
-                return;
-            _this.emit("closeTab", tabElement);
-        };
-        this._onTabMouseDown = function (event) {
-            var tabElement = event.target;
-            // Only handle left-click
-            if (event.button !== 0 || tabElement.parentElement !== _this.tabsRoot)
-                return;
-            _this.emit("activateTab", tabElement);
-            // Tab reordering
-            var tabRect = tabElement.getBoundingClientRect();
-            var leftOffsetFromMouse = tabRect.left - event.clientX;
-            var hasDragged = false;
-            tabElement.classList.add("dragged");
-            // FIXME: Hard-coded border?
-            tabElement.style.width = (tabRect.width + 1) + "px";
-            // NOTE: set/releaseCapture aren"t supported in Chrome yet
-            // hence the conditional call
-            if (tabElement.setCapture != null)
-                tabElement.setCapture();
-            var tabPlaceholderElement = document.createElement("li");
-            tabPlaceholderElement.style.width = tabRect.width + "px";
-            tabPlaceholderElement.className = "drop-placeholder";
-            tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
-            var updateDraggedTab = function (clientX) {
-                var tabsRootRect = _this.tabsRoot.getBoundingClientRect();
-                var tabLeft = Math.max(Math.min(clientX + leftOffsetFromMouse, tabsRootRect.right - tabRect.width), tabsRootRect.left);
-                if (hasDragged || Math.abs(tabLeft - tabRect.left) >= 10) {
-                    hasDragged = true;
-                }
-                else {
-                    tabLeft = tabRect.left;
-                }
-                tabElement.style.left = tabLeft + "px";
-                if (tabLeft < tabPlaceholderElement.getBoundingClientRect().left) {
-                    var otherTabElement = tabPlaceholderElement;
-                    while (true) {
-                        otherTabElement = tabPlaceholderElement.previousSibling;
-                        if (otherTabElement === tabElement)
-                            otherTabElement = otherTabElement.previousSibling;
-                        if (otherTabElement == null)
-                            break;
-                        var otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
-                        if (otherTabCenter < tabLeft)
-                            break;
-                        otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement);
-                    }
-                }
-                else {
-                    var otherTabElement = tabPlaceholderElement;
-                    while (true) {
-                        otherTabElement = tabPlaceholderElement.nextSibling;
-                        if (otherTabElement === tabElement)
-                            otherTabElement = otherTabElement.nextSibling;
-                        if (otherTabElement == null)
-                            break;
-                        var otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
-                        if (tabLeft + tabRect.width < otherTabCenter)
-                            break;
-                        otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement.nextSibling);
-                    }
-                }
-                if (tabPlaceholderElement.nextSibling === tabElement) {
-                    tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
-                }
-            };
-            var onDragTab = function (event) { updateDraggedTab(event.clientX); };
-            var onDropTab = function (event) {
-                // NOTE: set/releaseCapture aren't supported in Chrome yet
-                // hence the conditional call
-                if (tabElement.releaseCapture != null)
-                    tabElement.releaseCapture();
-                if (tabPlaceholderElement.parentElement != null) {
-                    _this.tabsRoot.replaceChild(tabElement, tabPlaceholderElement);
-                }
-                else {
-                    _this.tabsRoot.appendChild(tabElement);
-                }
-                tabElement.classList.remove("dragged");
-                tabElement.style.left = "";
-                tabElement.style.width = "";
-                document.removeEventListener("mousemove", onDragTab);
-                document.removeEventListener("mouseup", onDropTab);
-            };
-            updateDraggedTab(event.clientX);
-            document.addEventListener("mousemove", onDragTab);
-            document.addEventListener("mouseup", onDropTab);
-        };
-        this.tabsRoot = document.createElement("ol");
-        this.tabsRoot.classList.add("tab-strip");
-        container.appendChild(this.tabsRoot);
-        this.tabsRoot.addEventListener("mousedown", this._onTabMouseDown);
-        this.tabsRoot.addEventListener("mouseup", this._onTabMouseUp);
-    }
-    return TabStrip;
-})(events_1.EventEmitter);
-module.exports = TabStrip;
-
-},{"events":2}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -198,18 +82,11 @@ EventEmitter.prototype.emit = function(type) {
         break;
       // slower
       default:
-        len = arguments.length;
-        args = new Array(len - 1);
-        for (i = 1; i < len; i++)
-          args[i - 1] = arguments[i];
+        args = Array.prototype.slice.call(arguments, 1);
         handler.apply(this, args);
     }
   } else if (isObject(handler)) {
-    len = arguments.length;
-    args = new Array(len - 1);
-    for (i = 1; i < len; i++)
-      args[i - 1] = arguments[i];
-
+    args = Array.prototype.slice.call(arguments, 1);
     listeners = handler.slice();
     len = listeners.length;
     for (i = 0; i < len; i++)
@@ -247,7 +124,6 @@ EventEmitter.prototype.addListener = function(type, listener) {
 
   // Check for listener leak
   if (isObject(this._events[type]) && !this._events[type].warned) {
-    var m;
     if (!isUndefined(this._maxListeners)) {
       m = this._maxListeners;
     } else {
@@ -369,7 +245,7 @@ EventEmitter.prototype.removeAllListeners = function(type) {
 
   if (isFunction(listeners)) {
     this.removeListener(type, listeners);
-  } else {
+  } else if (listeners) {
     // LIFO order
     while (listeners.length)
       this.removeListener(type, listeners[listeners.length - 1]);
@@ -390,15 +266,20 @@ EventEmitter.prototype.listeners = function(type) {
   return ret;
 };
 
+EventEmitter.prototype.listenerCount = function(type) {
+  if (this._events) {
+    var evlistener = this._events[type];
+
+    if (isFunction(evlistener))
+      return 1;
+    else if (evlistener)
+      return evlistener.length;
+  }
+  return 0;
+};
+
 EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (isFunction(emitter._events[type]))
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
+  return emitter.listenerCount(type);
 };
 
 function isFunction(arg) {
@@ -417,5 +298,123 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}]},{},[1])(1)
+},{}],2:[function(require,module,exports){
+/// <reference path="../typings/tsd.d.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var events_1 = require("events");
+var TabStrip = (function (_super) {
+    __extends(TabStrip, _super);
+    function TabStrip(container) {
+        var _this = this;
+        _super.call(this);
+        this.onTabMouseUp = function (event) {
+            var tabElement = event.target;
+            // Only handle middle-click and ignore clicks outside any tab
+            if (event.button !== 1 || tabElement.parentElement !== _this.tabsRoot)
+                return;
+            _this.emit("closeTab", tabElement);
+        };
+        this.onTabMouseDown = function (event) {
+            var tabElement = event.target;
+            // Only handle left-click
+            if (event.button !== 0 || tabElement.parentElement !== _this.tabsRoot)
+                return;
+            _this.emit("activateTab", tabElement);
+            // Tab reordering
+            var tabRect = tabElement.getBoundingClientRect();
+            var leftOffsetFromMouse = tabRect.left - event.clientX;
+            var hasDragged = false;
+            tabElement.classList.add("dragged");
+            tabElement.style.width = tabRect.width + "px";
+            // NOTE: set/releaseCapture aren't supported in Chrome yet
+            // hence the conditional call
+            if (tabElement.setCapture != null)
+                tabElement.setCapture();
+            var tabPlaceholderElement = document.createElement("li");
+            tabPlaceholderElement.style.width = tabRect.width + "px";
+            tabPlaceholderElement.className = "drop-placeholder";
+            tabPlaceholderElement.classList.toggle("pinned", tabElement.classList.contains("pinned"));
+            tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
+            var updateDraggedTab = function (clientX) {
+                var tabsRootRect = _this.tabsRoot.getBoundingClientRect();
+                var tabLeft = Math.max(Math.min(clientX + leftOffsetFromMouse, tabsRootRect.right - tabRect.width), tabsRootRect.left);
+                if (hasDragged || Math.abs(tabLeft - tabRect.left) >= 10) {
+                    hasDragged = true;
+                }
+                else {
+                    tabLeft = tabRect.left;
+                }
+                tabElement.style.left = tabLeft + "px";
+                if (tabLeft < tabPlaceholderElement.getBoundingClientRect().left) {
+                    var otherTabElement = tabPlaceholderElement;
+                    while (true) {
+                        otherTabElement = tabPlaceholderElement.previousSibling;
+                        if (otherTabElement === tabElement)
+                            otherTabElement = otherTabElement.previousSibling;
+                        if (otherTabElement == null)
+                            break;
+                        var otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
+                        if (otherTabCenter < tabLeft)
+                            break;
+                        otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement);
+                    }
+                }
+                else {
+                    var otherTabElement = tabPlaceholderElement;
+                    while (true) {
+                        otherTabElement = tabPlaceholderElement.nextSibling;
+                        if (otherTabElement === tabElement)
+                            otherTabElement = otherTabElement.nextSibling;
+                        if (otherTabElement == null)
+                            break;
+                        var otherTabCenter = otherTabElement.getBoundingClientRect().left + otherTabElement.getBoundingClientRect().width / 2;
+                        if (tabLeft + tabRect.width <= otherTabCenter)
+                            break;
+                        otherTabElement.parentElement.insertBefore(tabPlaceholderElement, otherTabElement.nextSibling);
+                    }
+                }
+                if (tabPlaceholderElement.nextSibling === tabElement) {
+                    tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
+                }
+            };
+            var onDragTab = function (event) { updateDraggedTab(event.clientX); };
+            var onDropTab = function (event) {
+                // NOTE: set/releaseCapture aren't supported in Chrome yet
+                // hence the conditional call
+                if (tabElement.releaseCapture != null)
+                    tabElement.releaseCapture();
+                if (tabPlaceholderElement.parentElement != null) {
+                    _this.tabsRoot.replaceChild(tabElement, tabPlaceholderElement);
+                }
+                else {
+                    _this.tabsRoot.appendChild(tabElement);
+                }
+                tabElement.classList.remove("dragged");
+                tabElement.style.left = "";
+                tabElement.style.width = "";
+                document.removeEventListener("mousemove", onDragTab);
+                document.removeEventListener("mouseup", onDropTab);
+            };
+            updateDraggedTab(event.clientX);
+            document.addEventListener("mousemove", onDragTab);
+            document.addEventListener("mouseup", onDropTab);
+        };
+        this.tabsRoot = container.querySelector(":scope > ol.tab-strip");
+        if (this.tabsRoot == null) {
+            this.tabsRoot = document.createElement("ol");
+            this.tabsRoot.classList.add("tab-strip");
+            container.appendChild(this.tabsRoot);
+        }
+        this.tabsRoot.addEventListener("mousedown", this.onTabMouseDown);
+        this.tabsRoot.addEventListener("mouseup", this.onTabMouseUp);
+    }
+    return TabStrip;
+})(events_1.EventEmitter);
+module.exports = TabStrip;
+
+},{"events":1}]},{},[2])(2)
 });

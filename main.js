@@ -78,35 +78,34 @@ Chat.prototype.boot = function () {
    * on an 'onMessage' event from the Social provider
    * Check if it's a public key, else decrypt and forward it to the outer page
    */
-  this.social.on(
-    'onMessage',
-    function (data) {
-      logger.info('Message Received', data);
-      if (data.message.substring(0, 36) ===
-          '-----BEGIN PGP PUBLIC KEY BLOCK-----') {
-        this.keyList[data.from.userId] = data.message;
-      } else if (data.message.substring(0, 27) ===
-                 '-----BEGIN PGP MESSAGE-----') {
-        this.pgp.dearmor(data.message).then(
-          function (buf) {
-            return this.pgp.verifyDecrypt(
-              buf, this.keyList[data.from.userId]);
-          }.bind(this)).then(
-            function (decryptResults) {
-              if (decryptResults.signedBy[0] !==
-                  data.from.userId +
-                  ' <DorabellaUser@freedomjs.org>') {
-                data.message = 'BAD SIGNATURE, discarding';
-              } else {
-                data.message = ab2str(decryptResults.data);
-              }
-              this.dispatchEvent('recv-message', data);
-            }.bind(this));
-      } else {
-        data.message = 'MESSAGE NOT ENCRYPTED, discarding';
-        this.dispatchEvent('recv-message', data);
-      }
-    }.bind(this));
+  this.social.on('onMessage',
+                 function (data) {
+                   logger.info('Message Received', data);
+                   if (data.message.substring(0, 36) ===
+                       '-----BEGIN PGP PUBLIC KEY BLOCK-----') {
+                     this.keyList[data.from.userId] = data.message;
+                   } else if (data.message.substring(0, 27) ===
+                              '-----BEGIN PGP MESSAGE-----') {
+                     this.pgp.dearmor(data.message).then(
+                       function (buf) {
+                         return this.pgp.verifyDecrypt(
+                           buf, this.keyList[data.from.userId]);
+                       }.bind(this)).then(
+                         function (decryptResults) {
+                           if (decryptResults.signedBy[0] !==
+                               data.from.userId +
+                               ' <DorabellaUser@freedomjs.org>') {
+                             data.message = 'BAD SIGNATURE, discarding';
+                           } else {
+                             data.message = ab2str(decryptResults.data);
+                           }
+                           this.dispatchEvent('recv-message', data);
+                         }.bind(this));
+                   } else {
+                     data.message = 'MESSAGE NOT ENCRYPTED, discarding';
+                     this.dispatchEvent('recv-message', data);
+                   }
+                 }.bind(this));
 
   /**
    * On user profile changes, let's keep track of them
@@ -121,33 +120,32 @@ Chat.prototype.boot = function () {
   /**
    * On newly online or offline clients, let's update the roster
    **/
-  this.social.on(
-    'onClientState',
-    function (data) {
-      logger.debug('Roster Change', data);
-      if (data.status === this.social.STATUS.OFFLINE) {
-        if (this.clientList.hasOwnProperty(data.clientId)) {
-          delete this.clientList[data.clientId];
-        }
-      } else {  //Only track non-offline clients
-        this.clientList[data.clientId] = data;
-        if (this.publicKey) {
-          // Only send public key if it is initialized
-          // (onClientState can happpen before boot finishes)
-          this.social.sendMessage(data.userId, this.publicKey);
-        }
-      }
-      //If mine, send to the page
-      if (this.myClientState !== null &&
-          data.clientId === this.myClientState.clientId) {
-        if (data.status === this.social.STATUS.ONLINE) {
-          this.dispatchEvent('recv-status', "online");
-        } else {
-          this.dispatchEvent('recv-status', "offline");
-        }
-      }
-      this.updateBuddyList();
-    }.bind(this));
+  this.social.on('onClientState',
+                 function (data) {
+                   logger.debug('Roster Change', data);
+                   if (data.status === this.social.STATUS.OFFLINE) {
+                     if (this.clientList.hasOwnProperty(data.clientId)) {
+                       delete this.clientList[data.clientId];
+                     }
+                   } else {  //Only track non-offline clients
+                     this.clientList[data.clientId] = data;
+                     if (this.publicKey) {
+                       // Only send public key if it is initialized
+                       // (onClientState can happpen before boot finishes)
+                       this.social.sendMessage(data.userId, this.publicKey);
+                     }
+                   }
+                   //If mine, send to the page
+                   if (this.myClientState !== null &&
+                       data.clientId === this.myClientState.clientId) {
+                     if (data.status === this.social.STATUS.ONLINE) {
+                       this.dispatchEvent('recv-status', "online");
+                     } else {
+                       this.dispatchEvent('recv-status', "offline");
+                     }
+                   }
+                   this.updateBuddyList();
+                 }.bind(this));
 };
 
 Chat.prototype.updateBuddyList = function () {
