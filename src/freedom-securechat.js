@@ -30,11 +30,12 @@ var Chat = function (dispatchEvent) {
  * sent messages should be encrypted and forwarded to the Social provider.
  **/
 Chat.prototype.send = function (to, message) {
-  this.pgp.signEncrypt(str2ab(message), this.keyList[to]).then(
-    this.pgp.armor).then(
+  var scope = this;  // instead of .bind, so jasmine tests work
+  scope.pgp.signEncrypt(str2ab(message), scope.keyList[to]).then(
+    scope.pgp.armor).then(
       function (ciphertext) {
-        return this.social.sendMessage(to, ciphertext);
-      }.bind(this)).bind(this);
+        return scope.social.sendMessage(to, ciphertext);
+      });
 };
 
 Chat.prototype.clearKeys = function () {
@@ -61,7 +62,6 @@ Chat.prototype.boot = function () {
     rememberLogin: false
   }).then(
     function(ret) {
-      console.log(ret);
       this.clientState = ret;
       return this.pgp.setup('',// ret.userId +
                             '<DorabellaUser@freedomjs.org>');

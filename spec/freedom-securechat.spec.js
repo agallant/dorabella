@@ -10,7 +10,7 @@ describe('freedom-securechat', function () {
   var chatClient, chatDispatch;
 
   beforeEach(function () {
-    var social = testUtil.getApis().get("social").definition;
+    var social = testUtil.getApis().get('social').definition;
     freedom = {
       'socialprovider': testUtil.mockIface([
         ['login', {clientId: 'testuser'}],
@@ -51,9 +51,13 @@ describe('freedom-securechat', function () {
     }, 2000);
   });
 
-  xit('sends messages', function(done) {
-    // mocking currently inadequate for this test
-    chatClient.send('recipient', 'Hello world!');
-    done();
+  it('sends messages', function(done) {
+    setTimeout(function () {
+      chatClient.send('recipient', 'Hello world!');
+      setTimeout(function () {
+        expect(chatClient.social.sendMessage).toHaveBeenCalled();
+        done();
+      }, 1000);
+    }, 2000);
   });
 });
