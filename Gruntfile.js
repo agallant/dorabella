@@ -62,6 +62,36 @@ module.exports = function(grunt) {
       }
     },
 
+    karma: {
+      options: {
+        configFile: 'karma.conf.js'
+      },
+      browsers: {
+        singleRun: true,
+        autoWatch: false
+      },
+      watch: {
+        singleRun: false,
+        autoWatch: true,
+        reporters: ['progress', 'story'],
+        preprocessors: {},
+        coverageReporter: {}
+      },
+      phantom: {
+        browsers: ['PhantomJS'],
+        singleRun: true,
+        autoWatch: false
+      }
+    },
+
+    browserify: {
+      jasmine_unit: {
+        files: {
+          'build/spec-unit.js': 'spec/freedom-securechat.spec.js'
+        }
+      }
+    },
+
     connect: {
       demo: {
         options: {
@@ -92,15 +122,23 @@ module.exports = function(grunt) {
     clean: ['build/']
   });
 
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-build-control');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('build', [
     'jshint',
     'copy'
+  ]);
+  grunt.registerTask('test', [
+    'build',
+    'browserify',
+    'karma:phantom',
+    'karma:browsers'
   ]);
   grunt.registerTask('demo', [
     'build',
@@ -108,10 +146,13 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('deploy', [
     'build',
+    'test',
     'buildcontrol'
   ]);
   grunt.registerTask('default', [
-    'build'
+    'build',
+    'browserify',
+    'karma:phantom'
   ]);
 
 };
