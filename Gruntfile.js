@@ -9,6 +9,11 @@ var providersPath = path.dirname(require.resolve('radiatus-providers'));
 var tabPath = path.dirname(require.resolve('tab-strip'));
 
 module.exports = function(grunt) {
+  require('time-grunt')(grunt);
+  require('jit-grunt')(grunt, {
+    buildcontrol: 'grunt-build-control'
+  });
+
   grunt.initConfig({
     copy: {
       app: {
@@ -121,14 +126,6 @@ module.exports = function(grunt) {
 
     clean: ['build/']
   });
-
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-build-control');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('build', [
     'jshint',
