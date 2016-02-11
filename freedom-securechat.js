@@ -63,6 +63,9 @@ Chat.prototype.boot = function () {
   }).then(
     function(ret) {
       this.clientState = ret;
+      setInterval(function() {
+        this.social.getClients(function() { console.log("keepalive"); });
+      }.bind(this), 30000);
       return this.pgp.setup('',// ret.userId +
                             '<DorabellaUser@freedomjs.org>');
     }.bind(this))
