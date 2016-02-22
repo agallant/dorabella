@@ -21,11 +21,7 @@ function WSSocialProvider(dispatchEvent, webSocket) {
   this.dispatchEvent = dispatchEvent;
 
   this.websocket = freedom["core.websocket"] || webSocket;
-  if (typeof DEBUG !== 'undefined' && DEBUG) {
-    this.WS_URL = 'ws://data.radiatus.io:8082/route/';
-  } else {
-    this.WS_URL = 'ws://data.radiatus.io/route/';  // TODO: wss://
-  }
+  this.WS_URL = 'ws://social.dorabella.io:8082/route/';
   this.social = freedom();
 
   this.conn = null;   // Web Socket
@@ -34,7 +30,6 @@ function WSSocialProvider(dispatchEvent, webSocket) {
   //Note that in this.websocket, there is a 1-1 relationship between user and client
   this.users = {};    // List of seen users (<user_profile>)
   this.clients = {};  // List of seen clients (<client_state>)
-
 }
 
 /**
@@ -148,13 +143,13 @@ WSSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
 };
 
 /**
-   * Disconnects from the Web Socket server
-   * e.g. logout(Object options)
-   * No options needed
-   * 
-   * @method logout
-   * @return {Object} status - same schema as 'onStatus' events
-   **/
+ * Disconnects from the Web Socket server
+ * e.g. logout(Object options)
+ * No options needed
+ *
+ * @method logout
+ * @return {Object} status - same schema as 'onStatus' events
+ **/
 WSSocialProvider.prototype.logout = function(continuation) {
   if (this.conn === null) { // We may not have been logged in
     this.changeRoster(this.id, false);
@@ -235,27 +230,26 @@ WSSocialProvider.prototype.changeRoster = function(id, stat) {
  **/
 WSSocialProvider.prototype.onMessage = function(finishLogin, msg) {
   var i;
-  console.log(msg);
   msg = JSON.parse(msg.text);
 
   // If state information from the server
   // Store my own ID and all known users at the time
   if (msg.cmd === 'state') {
     this.id = msg.id;
-    for (i = 0; i < msg.roster.length; i += 1) {
-      this.changeRoster(msg.roster[i], true);
+    for (i = 0; i < msg.msg.length; i += 1) {
+      this.changeRoster(msg.msg[i], true);
     }
     finishLogin.finish(this.changeRoster(this.id, true));
-  // If directed message, emit event
+    // If directed message, emit event
   } else if (msg.cmd === 'message') {
     this.dispatchEvent('onMessage', {
       from: this.changeRoster(msg.from, true),
       message: msg.msg
     });
-  // Roster change event
+    // Roster change event
   } else if (msg.cmd === 'roster') {
     this.changeRoster(msg.id, msg.online);
-  // No idea what this message is, but let's keep track of who it's from
+    // No idea what this message is, but let's keep track of who it's from
   } else if (msg.from) {
     this.changeRoster(msg.from, true);
   }
