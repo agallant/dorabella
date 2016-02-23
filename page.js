@@ -20,12 +20,11 @@ function start(ChatClient) {
   }
 
   function append(container, elt) {
-    var log = document.getElementById('statuslog'),
-        br;
+    var br;
     //Trim old messages
     if (container.childNodes) {
-      while (container.childNodes.length > 36) {
-        container.removeChild(log.firstChild);
+      while (container.childNodes.length > 500) {
+        container.removeChild(container.firstChild);
       }
     }
     container.appendChild(elt);
