@@ -969,395 +969,288 @@
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":22}],2:[function(require,module,exports){
-module.exports = [{"name":"console","api":{"log":{"type":"method","value":["string","string"]},"debug":{"type":"method","value":["string","string"]},"info":{"type":"method","value":["string","string"]},"warn":{"type":"method","value":["string","string"]},"error":{"type":"method","value":["string","string"]}}},{"name":"core.console","api":{"log":{"type":"method","value":["string","string"]},"debug":{"type":"method","value":["string","string"]},"info":{"type":"method","value":["string","string"]},"warn":{"type":"method","value":["string","string"]},"error":{"type":"method","value":["string","string"]}}},{"name":"core.crypto","api":{"getRandomBytes":{"type":"method","value":["number"],"ret":"buffer"}}},{"name":"core.echo","api":{"setup":{"type":"method","value":["string"]},"send":{"type":"method","value":["string"]},"message":{"type":"event","value":"string"}}},{"name":"core","api":{"createChannel":{"type":"method","value":[],"ret":{"channel":"proxy","identifier":"string"}},"bindChannel":{"type":"method","value":["string"],"ret":"proxy"},"getId":{"type":"method","value":[],"ret":["array","string"]},"getLogger":{"type":"method","value":["string"],"ret":"proxy"},"require":{"type":"method","value":["string","string"],"ret":"proxy"}}},{"name":"core.oauth","api":{"initiateOAuth":{"type":"method","value":[["array","string"]],"ret":{"redirect":"string","state":"string"},"err":{"errcode":"string","message":"string"}},"launchAuthFlow":{"type":"method","value":["string",{"redirect":"string","state":"string"},"boolean"],"ret":"string","err":{"errcode":"string","message":"string"}}}},{"name":"core.peerconnection","api":{"setup":{"type":"method","value":["string","string",["array","string"],"boolean"]},"send":{"type":"method","value":[{"channelLabel":"string","text":"string","binary":"blob","buffer":"buffer"}]},"onReceived":{"type":"event","value":{"channelLabel":"string","text":"string","binary":"blob","buffer":"buffer"}},"openDataChannel":{"type":"method","value":["string"]},"closeDataChannel":{"type":"method","value":["string"]},"onOpenDataChannel":{"type":"event","value":{"channelId":"string"}},"onCloseDataChannel":{"type":"event","value":{"channelId":"string"}},"getBufferedAmount":{"type":"method","value":["string"],"ret":"number"},"getInfo":{"type":"method","value":[],"ret":"string"},"createOffer":{"type":"method","value":[{"offerToReceiveVideo":"number","offerToReceiveAudio":"number","voiceActivityDetection":"boolean","iceRestart":"boolean"}],"ret":{"type":"string","sdp":"string"}},"close":{"type":"method","value":[]},"onClose":{"type":"event","value":{}}}},{"name":"core.rtcdatachannel","api":{"constructor":{"value":["string"]},"getLabel":{"type":"method","value":[],"ret":"string"},"getOrdered":{"type":"method","value":[],"ret":"boolean"},"getMaxPacketLifeTime":{"type":"method","value":[],"ret":"number"},"getMaxRetransmits":{"type":"method","value":[],"ret":"number"},"getProtocol":{"type":"method","value":[],"ret":"string"},"getNegotiated":{"type":"method","value":[],"ret":"boolean"},"getId":{"type":"method","value":[],"ret":"number"},"getReadyState":{"type":"method","value":[],"ret":"string"},"getBufferedAmount":{"type":"method","value":[],"ret":"number"},"onopen":{"type":"event","value":[]},"onerror":{"type":"event","value":[]},"onclose":{"type":"event","value":[]},"close":{"type":"method","value":[]},"onmessage":{"type":"event","value":{"text":"string","buffer":"buffer"}},"getBinaryType":{"type":"method","value":[],"ret":"string"},"setBinaryType":{"type":"method","value":["string"]},"send":{"type":"method","value":["string"]},"sendBuffer":{"type":"method","value":["buffer"]}}},{"name":"core.rtcpeerconnection","api":{"constructor":{"value":[{"iceServers":["array",{"urls":["array","string"],"username":"string","credential":"string"}],"iceTransports":"string","peerIdentity":"string"}]},"createOffer":{"type":"method","value":[{"offerToReceiveAudio":"number","offerToReceiveVideo":"number","iceRestart":"boolean","voiceActivityDetection":"boolean"}],"ret":{"type":"string","sdp":"string"}},"createAnswer":{"type":"method","value":[],"ret":{"type":"string","sdp":"string"}},"setLocalDescription":{"type":"method","value":[{"type":"string","sdp":"string"}]},"getLocalDescription":{"type":"method","value":[],"ret":{"type":"string","sdp":"string"}},"setRemoteDescription":{"type":"method","value":[{"type":"string","sdp":"string"}],"ret":{}},"getRemoteDescription":{"type":"method","value":[],"ret":{"type":"string","sdp":"string"}},"getSignalingState":{"type":"method","value":[],"ret":"string"},"updateIce":{"type":"method","value":[{"iceServers":["array",{"urls":["array","string"],"username":"string","credential":"string"}],"iceTransports":"string","peerIdentity":"string"}],"ret":{}},"addIceCandidate":{"type":"method","value":[{"candidate":"string","sdpMid":"string","sdpMLineIndex":"number"}],"ret":{}},"getIceGatheringState":{"type":"method","value":[],"ret":"string"},"getIceConnectionState":{"type":"method","value":[],"ret":"string"},"getConfiguration":{"type":"method","value":[],"ret":{"iceServers":["array",{"urls":["array","string"],"username":"string","credential":"string"}],"iceTransports":"string","peerIdentity":"string"}},"getLocalStreams":{"type":"method","value":[],"ret":["array","string"]},"getRemoteStreams":{"type":"method","value":[],"ret":["array","string"]},"getStreamById":{"type":"method","value":["string"],"ret":"string"},"addStream":{"type":"method","value":["string"],"ret":{}},"removeStream":{"type":"method","value":["string"],"ret":{}},"close":{"type":"method","value":[],"ret":{}},"createDataChannel":{"type":"method","value":["string",{"ordered":"boolean","maxPacketLifeTime":"number","maxRetransmits":"number","protocol":"string","negotiated":"boolean","id":"number"}],"ret":"string"},"ondatachannel":{"type":"event","value":{"channel":"string"}},"getStats":{"type":"method","value":["string"],"ret":"object"},"onnegotiationneeded":{"type":"event","value":[]},"onicecandidate":{"type":"event","value":{"candidate":{"candidate":"string","sdpMid":"string","sdpMLineIndex":"number"}}},"onsignalingstatechange":{"type":"event","value":[]},"onaddstream":{"type":"event","value":{"stream":"number"}},"onremovestream":{"type":"event","value":{"stream":"number"}},"oniceconnectionstatechange":{"type":"event","value":[]}}},{"name":"core.storage","api":{"keys":{"type":"method","value":[],"ret":["array","string"]},"get":{"type":"method","value":["string"],"ret":"string"},"set":{"type":"method","value":["string","string"],"ret":"string"},"remove":{"type":"method","value":["string"],"ret":"string"},"clear":{"type":"method","value":[]}}},{"name":"core.tcpsocket","api":{"constructor":{"value":["number"]},"getInfo":{"type":"method","value":[],"ret":{"connected":"boolean","localAddress":"string","localPort":"number","peerAddress":"string","peerPort":"number"}},"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","ALREADY_CONNECTED":"Socket already connected","INVALID_ARGUMENT":"Invalid argument","TIMED_OUT":"Timed out","NOT_CONNECTED":"Socket not connected","NETWORK_CHANGED":"Network changed","CONNECTION_CLOSED":"Connection closed gracefully","CONNECTION_RESET":"Connection reset","CONNECTION_REFUSED":"Connection refused","CONNECTION_FAILED":"Connection failed","NAME_NOT_RESOLVED":"DNS lookup failed","INTERNET_DISCONNECTED":"Cannot reach any network","ADDRESS_INVALID":"Invalid address","ADDRESS_UNREACHABLE":"No route to host","HOST_UNREACHABLE":"SOCKS proxy server could not reach host"}},"close":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"onDisconnect":{"type":"event","value":{"errcode":"string","message":"string"}},"connect":{"type":"method","value":["string","number"],"err":{"errcode":"string","message":"string"}},"secure":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"pause":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"resume":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"prepareSecure":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"write":{"type":"method","value":["buffer"],"err":{"errcode":"string","message":"string"}},"onData":{"type":"event","value":{"data":"buffer"}},"listen":{"type":"method","value":["string","number"],"err":{"errcode":"string","message":"string"}},"onConnection":{"type":"event","value":{"socket":"number","host":"string","port":"number"}}}},{"name":"core.udpsocket","api":{"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","ALREADY_BOUND":"Socket already bound","ALREADY_CLOSED":"Socket already closed","INVALID_ARGUMENT":"Invalid argument","NETWORK_CHANGED":"Network changed","SEND_FAILED":"Send failed"}},"bind":{"type":"method","value":["string","number"],"ret":[],"err":{"errcode":"string","message":"string"}},"getInfo":{"type":"method","value":[],"ret":{"localAddress":"string","localPort":"number"}},"sendTo":{"type":"method","value":["buffer","string","number"],"ret":"number","err":{"errcode":"string","message":"string"}},"destroy":{"type":"method","value":[]},"onData":{"type":"event","value":{"resultCode":"number","address":"string","port":"number","data":"buffer"}}}},{"name":"core.view","api":{"show":{"type":"method","value":["string"]},"isSecure":{"type":"method","value":[],"ret":"boolean"},"close":{"type":"method","value":[]},"postMessage":{"type":"method","value":["object"]},"message":{"type":"event","value":"object"},"onClose":{"type":"event","value":[]}}},{"name":"core.websocket","api":{"constructor":{"value":["string",["array","string"]]},"send":{"type":"method","value":[{"text":"string","binary":"blob","buffer":"buffer"}],"err":{"errcode":"string","message":"string"}},"getReadyState":{"type":"method","value":[],"ret":"number"},"getBufferedAmount":{"type":"method","value":["string"],"ret":"number"},"close":{"type":"method","value":["number","string"],"err":{"errcode":"string","message":"string"}},"onMessage":{"type":"event","value":{"text":"string","binary":"blob","buffer":"buffer"}},"onOpen":{"type":"event","value":[]},"onError":{"type":"event","value":{"errcode":"string","message":"string"}},"onClose":{"type":"event","value":{"code":"number","reason":"string","wasClean":"boolean"}}}},{"name":"core.xhr","api":{"open":{"type":"method","value":["string","string","boolean","string","string"],"err":{"errcode":"string","message":"string"}},"send":{"type":"method","value":[{"string":"string","buffer":"buffer","blob":"blob"}]},"abort":{"type":"method","value":[]},"getResponseHeader":{"type":"method","value":["string"],"ret":"string"},"getAllResponseHeaders":{"type":"method","value":[],"ret":"string"},"setRequestHeader":{"type":"method","value":["string","string"]},"overrideMimeType":{"type":"method","value":["string"]},"getReadyState":{"type":"method","value":[],"ret":"number"},"getResponse":{"type":"method","value":[],"ret":{"string":"string","buffer":"buffer","object":"object"}},"getResponseText":{"type":"method","value":[],"ret":"string"},"getResponseURL":{"type":"method","value":[],"ret":"string"},"getResponseType":{"type":"method","value":[],"ret":"string"},"setResponseType":{"type":"method","value":["string"]},"getStatus":{"type":"method","value":[],"ret":"number"},"getStatusText":{"type":"method","value":[],"ret":"string"},"getTimeout":{"type":"method","value":[],"ret":"number"},"setTimeout":{"type":"method","value":["number"]},"getWithCredentials":{"type":"method","value":[],"ret":"boolean"},"setWithCredentials":{"type":"method","value":["boolean"]},"onloadstart":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onprogress":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onabort":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onerror":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onload":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"ontimeout":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onloadend":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onreadystatechange":{"type":"event","value":{}},"onuploadloadstart":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadprogress":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadabort":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploaderror":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadload":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadtimeout":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadloadend":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadreadystatechange":{"type":"event","value":{}}}},{"name":"social","api":{"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"User is currently offline","MALFORMEDPARAMETERS":"Parameters are malformed","LOGIN_BADCREDENTIALS":"Error authenticating with server","LOGIN_FAILEDCONNECTION":"Error connecting to server","LOGIN_ALREADYONLINE":"User is already logged in","LOGIN_OAUTHERROR":"OAuth Error","SEND_INVALIDDESTINATION":"Message sent to an invalid destination"}},"STATUS":{"type":"constant","value":{"OFFLINE":"OFFLINE","ONLINE":"ONLINE","ONLINE_WITH_OTHER_APP":"ONLINE_WITH_OTHER_APP"}},"login":{"type":"method","value":[{"agent":"string","version":"string","url":"string","interactive":"boolean","rememberLogin":"boolean"}],"ret":{"userId":"string","clientId":"string","status":"string","lastUpdated":"number","lastSeen":"number"},"err":{"errcode":"string","message":"string"}},"clearCachedCredentials":{"type":"method","value":[]},"getClients":{"type":"method","value":[],"ret":"object","err":{"errcode":"string","message":"string"}},"getUsers":{"type":"method","value":[],"ret":"object","err":{"errcode":"string","message":"string"}},"sendMessage":{"type":"method","value":["string","string"],"err":{"errcode":"string","message":"string"}},"logout":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"onMessage":{"type":"event","value":{"from":{"userId":"string","clientId":"string","status":"string","lastUpdated":"number","lastSeen":"number"},"message":"string"}},"onUserProfile":{"type":"event","value":{"userId":"string","lastUpdated":"number","name":"string","url":"string","imageData":"string"}},"onClientState":{"type":"event","value":{"userId":"string","clientId":"string","status":"string","lastUpdated":"number","lastSeen":"number"}}}},{"name":"storage","api":{"scope":{"type":"constant","value":{"SESSION":0,"DEVICE_LOCAL":1,"USER_LOCAL":2,"SHARED":3}},"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"Database not reachable","MALFORMEDPARAMETERS":"Parameters are malformed"}},"constructor":{"value":[{"scope":"number"}]},"keys":{"type":"method","value":[],"ret":["array","string"],"err":{"errcode":"string","message":"string"}},"get":{"type":"method","value":["string"],"ret":"string","err":{"errcode":"string","message":"string"}},"set":{"type":"method","value":["string","string"],"ret":"string","err":{"errcode":"string","message":"string"}},"remove":{"type":"method","value":["string"],"ret":"string","err":{"errcode":"string","message":"string"}},"clear":{"type":"method","value":[],"ret":[],"err":{"errcode":"string","message":"string"}}}},{"name":"storebuffer","api":{"scope":{"type":"constant","value":{"SESSION":0,"DEVICE_LOCAL":1,"USER_LOCAL":2,"SHARED":3}},"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"Database not reachable","MALFORMEDPARAMETERS":"Parameters are malformed"}},"constructor":{"value":[{"scope":"number"}]},"keys":{"type":"method","value":[],"ret":["array","string"],"err":{"errcode":"string","message":"string"}},"get":{"type":"method","value":["string"],"ret":"buffer","err":{"errcode":"string","message":"string"}},"set":{"type":"method","value":["string","buffer"],"ret":"buffer","err":{"errcode":"string","message":"string"}},"remove":{"type":"method","value":["string"],"ret":"buffer","err":{"errcode":"string","message":"string"}},"clear":{"type":"method","value":[],"ret":[],"err":{"errcode":"string","message":"string"}}}},{"name":"transport","api":{"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"Not reachable","MALFORMEDPARAMETERS":"Parameters are malformed"}},"setup":{"type":"method","value":["string","proxy"],"ret":[],"err":{"errcode":"string","message":"string"}},"send":{"type":"method","value":["string","buffer"],"ret":[],"err":{"errcode":"string","message":"string"}},"close":{"type":"method","value":[],"ret":[],"err":{"errcode":"string","message":"string"}},"onData":{"type":"event","value":{"tag":"string","data":"buffer"}},"onClose":{"type":"event","value":[]}}}];
+},{"_process":23}],2:[function(require,module,exports){
+module.exports = [{"name":"console","api":{"log":{"type":"method","value":["string","string"]},"debug":{"type":"method","value":["string","string"]},"info":{"type":"method","value":["string","string"]},"warn":{"type":"method","value":["string","string"]},"error":{"type":"method","value":["string","string"]}}},{"name":"core.console","api":{"log":{"type":"method","value":["string","string"]},"debug":{"type":"method","value":["string","string"]},"info":{"type":"method","value":["string","string"]},"warn":{"type":"method","value":["string","string"]},"error":{"type":"method","value":["string","string"]}}},{"name":"core.crypto","api":{"getRandomBytes":{"type":"method","value":["number"],"ret":"buffer"}}},{"name":"core.echo","api":{"setup":{"type":"method","value":["string"]},"send":{"type":"method","value":["string"]},"message":{"type":"event","value":"string"}}},{"name":"core","api":{"createChannel":{"type":"method","value":[],"ret":{"channel":"proxy","identifier":"string"}},"bindChannel":{"type":"method","value":["string"],"ret":"proxy"},"getId":{"type":"method","value":[],"ret":["array","string"]},"getLogger":{"type":"method","value":["string"],"ret":"proxy"},"require":{"type":"method","value":["string","string"],"ret":"proxy"}}},{"name":"core.oauth","api":{"initiateOAuth":{"type":"method","value":[["array","string"]],"ret":{"redirect":"string","state":"string"},"err":{"errcode":"string","message":"string"}},"launchAuthFlow":{"type":"method","value":["string",{"redirect":"string","state":"string"},"boolean"],"ret":"string","err":{"errcode":"string","message":"string"}}}},{"name":"core.peerconnection","api":{"setup":{"type":"method","value":["string","string",["array","string"],"boolean"]},"send":{"type":"method","value":[{"channelLabel":"string","text":"string","binary":"blob","buffer":"buffer"}]},"onReceived":{"type":"event","value":{"channelLabel":"string","text":"string","binary":"blob","buffer":"buffer"}},"openDataChannel":{"type":"method","value":["string"]},"closeDataChannel":{"type":"method","value":["string"]},"onOpenDataChannel":{"type":"event","value":{"channelId":"string"}},"onCloseDataChannel":{"type":"event","value":{"channelId":"string"}},"getBufferedAmount":{"type":"method","value":["string"],"ret":"number"},"getInfo":{"type":"method","value":[],"ret":"string"},"createOffer":{"type":"method","value":[{"offerToReceiveVideo":"number","offerToReceiveAudio":"number","voiceActivityDetection":"boolean","iceRestart":"boolean"}],"ret":{"type":"string","sdp":"string"}},"close":{"type":"method","value":[]},"onClose":{"type":"event","value":{}}}},{"name":"core.rtcdatachannel","api":{"constructor":{"value":["string"]},"getLabel":{"type":"method","value":[],"ret":"string"},"getOrdered":{"type":"method","value":[],"ret":"boolean"},"getMaxPacketLifeTime":{"type":"method","value":[],"ret":"number"},"getMaxRetransmits":{"type":"method","value":[],"ret":"number"},"getProtocol":{"type":"method","value":[],"ret":"string"},"getNegotiated":{"type":"method","value":[],"ret":"boolean"},"getId":{"type":"method","value":[],"ret":"number"},"getReadyState":{"type":"method","value":[],"ret":"string"},"getBufferedAmount":{"type":"method","value":[],"ret":"number"},"onopen":{"type":"event","value":[]},"onerror":{"type":"event","value":[]},"onclose":{"type":"event","value":[]},"close":{"type":"method","value":[]},"onmessage":{"type":"event","value":{"text":"string","buffer":"buffer"}},"getBinaryType":{"type":"method","value":[],"ret":"string"},"setBinaryType":{"type":"method","value":["string"]},"send":{"type":"method","value":["string"]},"sendBuffer":{"type":"method","value":["buffer"]}}},{"name":"core.rtcpeerconnection","api":{"constructor":{"value":[{"iceServers":["array",{"urls":["array","string"],"username":"string","credential":"string"}],"iceTransports":"string","peerIdentity":"string"}]},"createOffer":{"type":"method","value":[{"offerToReceiveAudio":"number","offerToReceiveVideo":"number","iceRestart":"boolean","voiceActivityDetection":"boolean"}],"ret":{"type":"string","sdp":"string"}},"createAnswer":{"type":"method","value":[],"ret":{"type":"string","sdp":"string"}},"setLocalDescription":{"type":"method","value":[{"type":"string","sdp":"string"}]},"getLocalDescription":{"type":"method","value":[],"ret":{"type":"string","sdp":"string"}},"setRemoteDescription":{"type":"method","value":[{"type":"string","sdp":"string"}],"ret":{}},"getRemoteDescription":{"type":"method","value":[],"ret":{"type":"string","sdp":"string"}},"getSignalingState":{"type":"method","value":[],"ret":"string"},"updateIce":{"type":"method","value":[{"iceServers":["array",{"urls":["array","string"],"username":"string","credential":"string"}],"iceTransports":"string","peerIdentity":"string"}],"ret":{}},"addIceCandidate":{"type":"method","value":[{"candidate":"string","sdpMid":"string","sdpMLineIndex":"number"}],"ret":{}},"getIceGatheringState":{"type":"method","value":[],"ret":"string"},"getIceConnectionState":{"type":"method","value":[],"ret":"string"},"getConfiguration":{"type":"method","value":[],"ret":{"iceServers":["array",{"urls":["array","string"],"username":"string","credential":"string"}],"iceTransports":"string","peerIdentity":"string"}},"getLocalStreams":{"type":"method","value":[],"ret":["array","string"]},"getRemoteStreams":{"type":"method","value":[],"ret":["array","string"]},"getStreamById":{"type":"method","value":["string"],"ret":"string"},"addStream":{"type":"method","value":["string"],"ret":{}},"removeStream":{"type":"method","value":["string"],"ret":{}},"close":{"type":"method","value":[],"ret":{}},"createDataChannel":{"type":"method","value":["string",{"ordered":"boolean","maxPacketLifeTime":"number","maxRetransmits":"number","protocol":"string","negotiated":"boolean","id":"number"}],"ret":"string"},"ondatachannel":{"type":"event","value":{"channel":"string"}},"getStats":{"type":"method","value":["string"],"ret":"object"},"onnegotiationneeded":{"type":"event","value":[]},"onicecandidate":{"type":"event","value":{"candidate":{"candidate":"string","sdpMid":"string","sdpMLineIndex":"number"}}},"onsignalingstatechange":{"type":"event","value":[]},"onaddstream":{"type":"event","value":{"stream":"number"}},"onremovestream":{"type":"event","value":{"stream":"number"}},"oniceconnectionstatechange":{"type":"event","value":[]}}},{"name":"core.storage","api":{"keys":{"type":"method","value":[],"ret":["array","string"]},"get":{"type":"method","value":["string"],"ret":"string"},"set":{"type":"method","value":["string","string"],"ret":"string"},"remove":{"type":"method","value":["string"],"ret":"string"},"clear":{"type":"method","value":[]}}},{"name":"core.tcpsocket","api":{"constructor":{"value":["number"]},"getInfo":{"type":"method","value":[],"ret":{"connected":"boolean","localAddress":"string","localPort":"number","peerAddress":"string","peerPort":"number"}},"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","ALREADY_CONNECTED":"Socket already connected","INVALID_ARGUMENT":"Invalid argument","TIMED_OUT":"Timed out","NOT_CONNECTED":"Socket not connected","NETWORK_CHANGED":"Network changed","CONNECTION_CLOSED":"Connection closed gracefully","CONNECTION_RESET":"Connection reset","CONNECTION_REFUSED":"Connection refused","CONNECTION_FAILED":"Connection failed","NAME_NOT_RESOLVED":"DNS lookup failed","INTERNET_DISCONNECTED":"Cannot reach any network","ADDRESS_INVALID":"Invalid address","ADDRESS_UNREACHABLE":"No route to host","HOST_UNREACHABLE":"SOCKS proxy server could not reach host"}},"close":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"onDisconnect":{"type":"event","value":{"errcode":"string","message":"string"}},"connect":{"type":"method","value":["string","number"],"err":{"errcode":"string","message":"string"}},"secure":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"pause":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"resume":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"prepareSecure":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"write":{"type":"method","value":["buffer"],"err":{"errcode":"string","message":"string"}},"onData":{"type":"event","value":{"data":"buffer"}},"listen":{"type":"method","value":["string","number"],"err":{"errcode":"string","message":"string"}},"onConnection":{"type":"event","value":{"socket":"number","host":"string","port":"number"}}}},{"name":"core.udpsocket","api":{"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","ALREADY_BOUND":"Socket already bound","ALREADY_CLOSED":"Socket already closed","INVALID_ARGUMENT":"Invalid argument","NETWORK_CHANGED":"Network changed","SEND_FAILED":"Send failed"}},"bind":{"type":"method","value":["string","number"],"ret":[],"err":{"errcode":"string","message":"string"}},"getInfo":{"type":"method","value":[],"ret":{"localAddress":"string","localPort":"number"}},"sendTo":{"type":"method","value":["buffer","string","number"],"ret":"number","err":{"errcode":"string","message":"string"}},"destroy":{"type":"method","value":[]},"onData":{"type":"event","value":{"resultCode":"number","address":"string","port":"number","data":"buffer"}}}},{"name":"core.view","api":{"show":{"type":"method","value":["string"]},"isSecure":{"type":"method","value":[],"ret":"boolean"},"close":{"type":"method","value":[]},"postMessage":{"type":"method","value":["object"]},"message":{"type":"event","value":"object"},"onClose":{"type":"event","value":[]}}},{"name":"core.websocket","api":{"constructor":{"value":["string",["array","string"]]},"send":{"type":"method","value":[{"text":"string","binary":"blob","buffer":"buffer"}],"err":{"errcode":"string","message":"string"}},"getReadyState":{"type":"method","value":[],"ret":"number"},"getBufferedAmount":{"type":"method","value":["string"],"ret":"number"},"close":{"type":"method","value":["number","string"],"err":{"errcode":"string","message":"string"}},"onMessage":{"type":"event","value":{"text":"string","binary":"blob","buffer":"buffer"}},"onOpen":{"type":"event","value":[]},"onError":{"type":"event","value":{"errcode":"string","message":"string"}},"onClose":{"type":"event","value":{"code":"number","reason":"string","wasClean":"boolean"}}}},{"name":"core.xhr","api":{"open":{"type":"method","value":["string","string","boolean","string","string"],"err":{"errcode":"string","message":"string"}},"send":{"type":"method","value":[{"string":"string","buffer":"buffer"}]},"abort":{"type":"method","value":[]},"getResponseHeader":{"type":"method","value":["string"],"ret":"string"},"getAllResponseHeaders":{"type":"method","value":[],"ret":"string"},"setRequestHeader":{"type":"method","value":["string","string"]},"overrideMimeType":{"type":"method","value":["string"]},"getReadyState":{"type":"method","value":[],"ret":"number"},"getResponse":{"type":"method","value":[],"ret":{"string":"string","buffer":"buffer","object":"object"}},"getResponseText":{"type":"method","value":[],"ret":"string"},"getResponseURL":{"type":"method","value":[],"ret":"string"},"getResponseType":{"type":"method","value":[],"ret":"string"},"setResponseType":{"type":"method","value":["string"]},"getStatus":{"type":"method","value":[],"ret":"number"},"getStatusText":{"type":"method","value":[],"ret":"string"},"getTimeout":{"type":"method","value":[],"ret":"number"},"setTimeout":{"type":"method","value":["number"]},"getWithCredentials":{"type":"method","value":[],"ret":"boolean"},"setWithCredentials":{"type":"method","value":["boolean"]},"onloadstart":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onprogress":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onabort":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onerror":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onload":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"ontimeout":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onloadend":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onreadystatechange":{"type":"event","value":{}},"onuploadloadstart":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadprogress":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadabort":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploaderror":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadload":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadtimeout":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadloadend":{"type":"event","value":{"lengthComputable":"boolean","loaded":"number","total":"number"}},"onuploadreadystatechange":{"type":"event","value":{}}}},{"name":"social","api":{"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"User is currently offline","MALFORMEDPARAMETERS":"Parameters are malformed","LOGIN_BADCREDENTIALS":"Error authenticating with server","LOGIN_FAILEDCONNECTION":"Error connecting to server","LOGIN_ALREADYONLINE":"User is already logged in","LOGIN_OAUTHERROR":"OAuth Error","SEND_INVALIDDESTINATION":"Message sent to an invalid destination"}},"STATUS":{"type":"constant","value":{"OFFLINE":"OFFLINE","ONLINE":"ONLINE","ONLINE_WITH_OTHER_APP":"ONLINE_WITH_OTHER_APP"}},"login":{"type":"method","value":[{"agent":"string","version":"string","url":"string","interactive":"boolean","rememberLogin":"boolean"}],"ret":{"userId":"string","clientId":"string","status":"string","lastUpdated":"number","lastSeen":"number"},"err":{"errcode":"string","message":"string"}},"clearCachedCredentials":{"type":"method","value":[]},"getClients":{"type":"method","value":[],"ret":"object","err":{"errcode":"string","message":"string"}},"getUsers":{"type":"method","value":[],"ret":"object","err":{"errcode":"string","message":"string"}},"sendMessage":{"type":"method","value":["string","string"],"err":{"errcode":"string","message":"string"}},"logout":{"type":"method","value":[],"err":{"errcode":"string","message":"string"}},"onMessage":{"type":"event","value":{"from":{"userId":"string","clientId":"string","status":"string","lastUpdated":"number","lastSeen":"number"},"message":"string"}},"onUserProfile":{"type":"event","value":{"userId":"string","lastUpdated":"number","name":"string","url":"string","imageData":"string"}},"onClientState":{"type":"event","value":{"userId":"string","clientId":"string","status":"string","lastUpdated":"number","lastSeen":"number"}}}},{"name":"storage","api":{"scope":{"type":"constant","value":{"SESSION":0,"DEVICE_LOCAL":1,"USER_LOCAL":2,"SHARED":3}},"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"Database not reachable","MALFORMEDPARAMETERS":"Parameters are malformed"}},"constructor":{"value":[{"scope":"number"}]},"keys":{"type":"method","value":[],"ret":["array","string"],"err":{"errcode":"string","message":"string"}},"get":{"type":"method","value":["string"],"ret":"string","err":{"errcode":"string","message":"string"}},"set":{"type":"method","value":["string","string"],"ret":"string","err":{"errcode":"string","message":"string"}},"remove":{"type":"method","value":["string"],"ret":"string","err":{"errcode":"string","message":"string"}},"clear":{"type":"method","value":[],"ret":[],"err":{"errcode":"string","message":"string"}}}},{"name":"storebuffer","api":{"scope":{"type":"constant","value":{"SESSION":0,"DEVICE_LOCAL":1,"USER_LOCAL":2,"SHARED":3}},"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"Database not reachable","MALFORMEDPARAMETERS":"Parameters are malformed"}},"constructor":{"value":[{"scope":"number"}]},"keys":{"type":"method","value":[],"ret":["array","string"],"err":{"errcode":"string","message":"string"}},"get":{"type":"method","value":["string"],"ret":"buffer","err":{"errcode":"string","message":"string"}},"set":{"type":"method","value":["string","buffer"],"ret":"buffer","err":{"errcode":"string","message":"string"}},"remove":{"type":"method","value":["string"],"ret":"buffer","err":{"errcode":"string","message":"string"}},"clear":{"type":"method","value":[],"ret":[],"err":{"errcode":"string","message":"string"}}}},{"name":"transport","api":{"ERRCODE":{"type":"constant","value":{"SUCCESS":"Success!","UNKNOWN":"Unknown error","OFFLINE":"Not reachable","MALFORMEDPARAMETERS":"Parameters are malformed"}},"setup":{"type":"method","value":["string","proxy"],"ret":[],"err":{"errcode":"string","message":"string"}},"send":{"type":"method","value":["string","buffer"],"ret":[],"err":{"errcode":"string","message":"string"}},"close":{"type":"method","value":[],"ret":[],"err":{"errcode":"string","message":"string"}},"onData":{"type":"event","value":{"tag":"string","data":"buffer"}},"onClose":{"type":"event","value":[]}}}];
 
 },{}],3:[function(require,module,exports){
-(function (global){
-/* jslint sloppy:true */
-/* globals require, exports, spyOn, global */
-
-var Api = require('../src/api');
-var ApiInterface = require('../src/proxy/apiInterface');
-var Bundle = require('../src/bundle');
-var Consumer = require('../src/consumer');
-var Debug = require('../src/debug');
-var Provider = require('../src/provider');
-var Resource = require('../src/resource');
-var util = require('../src/util');
-var Frame = require('../src/link/frame');
-var PromiseCompat = require('es6-promise').Promise;
-
-exports.createTestPort = function(id) {
-  var port = {
-    id: id,
-    messages: [],
-    gotMessageCalls: [],
-    checkGotMessage: function() {
-      var len = this.gotMessageCalls.length;
-      for (var i=0; i<len; i++) {
-        var call = this.gotMessageCalls.shift();
-        var result = this.gotMessage(call.from, call.match);
-        if (result !== false) {
-          call.callback(result);
-        } else {
-          this.gotMessageCalls.push(call);
-        }
-      }
-    },
-    onMessage: function(from, msg) {
-      this.messages.push([from, msg]);
-      this.emit('onMessage', msg);
-      this.checkGotMessage();
-    },
-    gotMessage: function(from, match) {
-      var okay;
-      for (var i = 0; i < this.messages.length; i++) {
-        if (this.messages[i][0] === from) {
-          okay = true;
-          for (var j in match) {
-            if (this.messages[i][1][j] !== match[j]) {
-              okay = false;
-            }
-          }
-          if (okay) {
-            return this.messages[i][1];
-          }
-        }
-      }
-      return false;
-    },
-    gotMessageAsync: function(from, match, callback) {
-      this.gotMessageCalls.push({
-        from: from,
-        match: match,
-        callback: callback
-      });
-      this.checkGotMessage();
-    }
-    
-  };
-
-  util.handleEvents(port);
-
-  return port;
-};
-
-exports.createMockPolicy = function() {
-  return {
-    api: new Api(),
-    debug: new Debug()
-  };
-};
-
-exports.mockIface = function(props, consts) {
-  var iface = {};
-  props.forEach(function(p) {
-    if (p[1] && p[1].then) {
-      iface[p[0]] = function(r) {
-        return r;
-      }.bind({}, p[1]);
-    } else {
-      iface[p[0]] = function(r) {
-        return PromiseCompat.resolve(r);
-      }.bind({}, p[1]);
-    }
-    spyOn(iface, p[0]).and.callThrough();
-  });
-  if (consts) {
-    consts.forEach(function(c) {
-      iface[c[0]] = c[1];
-    });
-  }
-  return function() {
-    return iface;
-  };
-};
-
-exports.getApis = function() {
-  var api = new Api();
-  Bundle.register([], api);
-  return api;
-};
-
-// Setup resource loading for the test environment, which uses file:// urls.
-var specBase = null, extraResolve = function() {};
-(function findDefaultBase() {
-  if (typeof location === 'undefined') {
-    return;
-  }
-  var loc = location.protocol + "//" + location.host + location.pathname;
-  var dirname = loc.substr(0, loc.lastIndexOf('/'));
-  specBase = dirname;
-})();
+/*jslint indent:2,white:true,sloppy:true,node:true */
+var EventInterface = require('../../src/proxy/eventInterface');
+var Consumer = require('../../src/consumer');
+var util = require('../../src/util');
 
 /**
- * Define where the relative resolver used by generic integration tests
- * should map to, and provide a hook to register additional, implementation
- * specific resolvers.
+ * Core freedom services available to all modules.
+ * Created by the environment helper in response to a 'core' request.
+ * @Class Core_unprivileged
+ * @constructor
+ * @param {Manager} manager The manager this core is connected with.
+ * @private
  */
-exports.setSpecBase = function(base, resolvers) {
-  specBase = base;
-  if (resolvers) {
-    extraResolve = resolvers;
+var Core_unprivileged = function(manager, postMessage) {
+  this.manager = manager.module;
+  this.debug = this.manager.debug;
+};
+
+Core_unprivileged.unboundChannels = {};
+
+Core_unprivileged.contextId = undefined;
+Core_unprivileged.moduleInternal = undefined;
+
+/**
+ * Create a custom channel.
+ * Returns the structure {channel: Proxy, identifier: Object},
+ * where the identifier can be 'redeemed' by another module or provider using
+ * bind channel, at which point the deferred object will resolve with a channel
+ * between the two endpoints.
+ * @method createChannel
+ * @params {Function} continuation Method to call with the cosntructed structure.
+ */
+Core_unprivileged.prototype.createChannel = function(continuation) {
+  var proxy = new Consumer(EventInterface, this.manager.debug),
+      id = util.getId(),
+      chan = this.getChannel(proxy);
+  this.manager.setup(proxy);
+
+  if (this.isInModule()) {
+    this.manager.emit(this.manager.delegate, {
+      type: 'Delegation',
+      request: 'handle',
+      flow: 'core',
+      message: {
+        type: 'register',
+        id: id
+      }
+    });
+  }
+  Core_unprivileged.unboundChannels[id] = {
+    local: true,
+    proxy: proxy
+  };
+
+  proxy.once('start', this.getChannel.bind(this, proxy));
+
+  continuation({
+    channel: chan,
+    identifier: id
+  });
+};
+
+Core_unprivileged.prototype.getChannel = function(proxy) {
+  var iface = proxy.getProxyInterface(),
+      chan = iface();
+  chan.close = iface.close;
+  chan.onClose = iface.onClose;
+  iface.onClose(chan, function() {
+    proxy.doClose();
+  });
+  return chan;
+};
+
+/**
+ * Receive a message from another core instance.
+ * Note: Core_unprivileged is not registered on the hub. it is a provider,
+ *     as it's location and name would indicate. This function is called by
+ *     port-app to relay messages up to higher levels.  More generally, the
+ *     messages emitted by the core to 'this.manager.emit(this.mananage.delegate'
+ *     Should be onMessaged to the controlling core.
+ * @param {String} source The source of the message.
+ * @param {Object} msg The messsage from an isolated core provider.
+ */
+Core_unprivileged.prototype.onMessage = function(source, msg) {
+  if (msg.type === 'register') {
+    Core_unprivileged.unboundChannels[msg.id] = {
+      remote: true,
+      resolve: msg.reply,
+      source: source
+    };
+  } else if (msg.type === 'clear') {
+    delete Core_unprivileged.unboundChannels[msg.id];
+  } else if (msg.type === 'bind') {
+    if (Core_unprivileged.unboundChannels[msg.id]) {
+      this.bindChannel(msg.id, function() {}, source);
+    }
+  } else if (msg.type === 'require') {
+    source.require(msg.id, msg.manifest);
   }
 };
 
-exports.getResolvers = function() {
-  var resolvers = [];
-  resolvers.push({'resolver': function(manifest, url, resolve, reject) {
-    if (url.indexOf('relative://') === 0) {
-      resolve(specBase + '/' + url.substr(11));
-      return true;
-    }
-    reject();
-  }});
-  resolvers.push({'resolver': function(manifest, url, resolve, reject) {
-    if (manifest && manifest.indexOf('file://') === 0) {
-      manifest = 'http' + manifest.substr(4);
-      rsrc.resolve(manifest, url).then(function(addr) {
-        addr = 'file' + addr.substr(4);
-        resolve(addr);
+/**
+ * Bind a custom channel.
+ * Creates a proxy interface to the custom channel, which will be bound to
+ * the proxy obtained through an earlier createChannel call.
+ * channel to a proxy.
+ * @method bindChannel
+ * @param {Object} identifier An identifier obtained through createChannel.
+ * @param {Function} continuation A function to be called with the proxy.
+ */
+Core_unprivileged.prototype.bindChannel = function(identifier, continuation, source) {
+  var toBind = Core_unprivileged.unboundChannels[identifier],
+      newSource = !source;
+
+  // when bindChannel is called directly, source will be undefined.
+  // When it is propogated by onMessage, a source for binding will already exist.
+  if (newSource) {
+    this.debug.debug('making local proxy for core binding');
+    source = new Consumer(EventInterface, this.debug);
+    this.manager.setup(source);
+  }
+
+  // If this is a known identifier and is in the same context, binding is easy.
+  if (toBind && toBind.local) {
+    this.debug.debug('Binding a channel to port on this hub:' + source);
+    this.manager.createLink(source, identifier, toBind.proxy, 'default');
+    delete Core_unprivileged.unboundChannels[identifier];
+    if (this.manager.delegate && this.manager.toDelegate.core) {
+      this.manager.emit(this.manager.delegate, {
+        type: 'Delegation',
+        request: 'handle',
+        flow: 'core',
+        message: {
+          type: 'clear',
+          id: identifier
+        }
       });
-      return true;
     }
-    reject();
-  }});
-  var rsrc = new Resource();
-  resolvers.push({'proto':'file', 'retriever': rsrc.xhrRetriever});
-  resolvers.push({'proto':'null', 'retriever': rsrc.xhrRetriever});
-  extraResolve(resolvers);
-  return resolvers;
-};
-
-exports.setupResolvers = function() { 
-  var rsrc = new Resource();
-  rsrc.register(exports.getResolvers());
-  return rsrc;
-};
-
-var activeContexts = [];
-exports.cleanupIframes = function() {
-  activeContexts.forEach(function(f) {
-    f.close();
-  });
-  activeContexts = [];
-  if (typeof document === 'undefined') {
+  } else if (toBind && toBind.remote) {
+    this.debug.debug('Binding a channel into a module.');
+    this.manager.createLink(
+        source,
+        newSource ? 'default' : identifier,
+        toBind.source,
+        identifier);
+    toBind.resolve({
+      type: 'Bind Channel',
+      request:'core',
+      flow: 'core',
+      message: {
+        type: 'bind',
+        id: identifier
+      }
+    });
+    delete Core_unprivileged.unboundChannels[identifier];
+  } else if (this.isInModule()) {
+    this.debug.info('delegating channel bind for an unknown ID:' + identifier);
+    this.manager.emit(this.manager.delegate, {
+      type: 'Delegation',
+      request: 'handle',
+      flow: 'core',
+      message: {
+        type: 'bind',
+        id: identifier
+      }
+    });
+    source.once('start', function(p, cb) {
+      cb(this.getChannel(p));
+    }.bind(this, source, continuation));
+    this.manager.createLink(source,
+        'default',
+        this.manager.hub.getDestination(this.manager.delegate),
+        identifier);
+    delete Core_unprivileged.unboundChannels[identifier];
+    return;
+  } else {
+    this.debug.warn('Asked to bind unknown channel: ' + identifier);
+    this.debug.log(Core_unprivileged.unboundChannels);
+    continuation();
     return;
   }
-  var frames = document.getElementsByTagName('iframe');
-  // frames is a live HTMLCollection, so it is modified each time an
-  // element is removed.
-  while (frames.length > 0) {
-    frames[0].parentNode.removeChild(frames[0]);
+
+  if (source.getInterface) {
+    continuation(this.getChannel(source));
+  } else {
+    continuation();
   }
 };
 
-var coreProviders;
-exports.setCoreProviders = function(providers) {
-  coreProviders = providers;
-};
-var testPort = Frame;
-var testSource = "build/freedom.frame.js";
-var testDebug = 'debug';
-exports.setModuleStrategy = function(port, source, debug) {
-  testPort = port;
-  testSource = source;
-  testDebug = debug;
+/**
+ * @method isInModule
+ * @private
+ * @returns {Boolean} Whether this class is running in a module.
+ */
+Core_unprivileged.prototype.isInModule = function () {
+  return (this.manager.delegate && this.manager.toDelegate.core);
 };
 
-exports.setupModule = function(manifest_url, options) {
-  var myGlobal = global, dir = '';
-  if (typeof document !== 'undefined') {
-    myGlobal = {
-      document: document
-    };
-  }
-  if (!options) {
-    options = {};
-  }
+/**
+ * Require a dynamic dependency for your freedom module.
+ * If new permissions are needed beyond what are already available to the
+ * freedom context, the user will need to approve of the requested permissions.
+ * @method require
+ * @param {String} manifest The URL of the manifest to require.
+ * @param {String} api The API of the dependency to expose if not default.
+ * @param {Function} callback The function to call with the dependency.
+ */
+Core_unprivileged.prototype.require = function (manifest, api, callback) {
+  if (this.isInModule() && Core_unprivileged.moduleInternal) {
+    // Register a callback with moduleInternal.
+    // DependencyName is the name of the channel moduelInternal will allocate
+    // callback will be called once a link to that channel is seen.
+    var dependencyName =
+        Core_unprivileged.moduleInternal.registerId(api, callback);
 
-  if (typeof window !== 'undefined') {  
-    var path = window.location.href,
-        dir_idx = path.lastIndexOf('/');
-    dir = path.substr(0, dir_idx) + '/';
-  }
-  //TODO: hardcoding of deps. is bad.
-  var freedom = require('../src/entry')({
-      'global': myGlobal,
-      'isModule': false,
-      'providers': coreProviders,
-      'resolvers': exports.getResolvers(),
-      'portType': testPort,
-      'source': dir + testSource,
-      'inject': [
-        dir + "node_modules/es5-shim/es5-shim.js",
-        dir + "node_modules/es6-promise/dist/es6-promise.js"
-      ]
-    }, manifest_url, options);
-  freedom.then(function(c) {
-    activeContexts.push(c);
-  });
-  return freedom;
-};
-
-exports.directProviderFor = function (mod, api) {
-  var debug = new Debug();
-  var provider = new Provider(api, debug);
-  if (typeof mod === 'function') {
-    provider.getProxyInterface()().provideAsynchronous(mod);
-  } else if (mod.provide) {
-    mod.provide(provider.getProxyInterface());
-  }
-  var iface = ApiInterface.bind(ApiInterface, api);
-  var consumer = new Consumer(iface, debug);
-
-  // Create a link between them.
-  provider.on('default', consumer.onMessage.bind(consumer, 'default'));
-  consumer.on('default', provider.onMessage.bind(provider, 'default'));
-  provider.onMessage('control', {channel: 'default', reverse: 'default', name: 'default'});
-
-  return consumer.getProxyInterface();
-};
-
-exports.providerFor = function(module, api) {
-  var manifest = {
-    name: 'providers',
-    app: {script: 'relative://spec/helper/providers.js'},
-    dependencies: {undertest: {url: 'relative://' + module, api: api}}
-  };
-  var freedom = exports.setupModule('manifest://' + JSON.stringify(manifest));
-  return freedom.then(function(chan) {
-    activeContexts.push(chan);
-    var inst = chan();
-    var provider = new ProviderHelper(inst);
-    provider.create = function(name) {
-      inst.emit("create", {name: name, provider: 'undertest'});
-    };
-    return provider;
-  });
-};
-
-function ProviderHelper(inFreedom) {
-  this.callId = 0;
-  this.callbacks = {};
-  this.errcallbacks = {};
-  this.unboundChanCallbacks = [];
-  this.chanCallbacks = {};
-  this.freedom = inFreedom;
-  this._eventListeners = {};
-  this.freedom.on("eventFired", this._on.bind(this));
-  this.freedom.on("return", this.ret.bind(this));
-  this.freedom.on("error", this.err.bind(this));
-  this.freedom.on("initChannel", this.onInitChannel.bind(this));
-  this.freedom.on("inFromChannel", this.onInFromChannel.bind(this));
-}
-
-ProviderHelper.prototype.createProvider = function(name, provider,
-                                                   constructorArguments) {
-  this.freedom.emit('create', {
-    name: name,
-    provider: provider,
-    constructorArguments: constructorArguments
-  });
-};
-
-ProviderHelper.prototype.create = ProviderHelper.prototype.createProvider;
-
-ProviderHelper.prototype.call = function(provider, method, args, cb, errcb) {
-  this.callId += 1;
-  this.callbacks[this.callId] = cb;
-  this.errcallbacks[this.callId] = errcb;
-  this.freedom.emit('call', {
-    id: this.callId,
-    provider: provider,
-    method: method,
-    args: args
-  });
-  return this.callId;
-};
-
-ProviderHelper.prototype.ret = function(obj) {
-  if (this.callbacks[obj.id]) {
-    this.callbacks[obj.id](obj.data);
-    delete this.callbacks[obj.id];
-  }
-};
-
-ProviderHelper.prototype.err = function(obj) {
-  if (this.errcallbacks[obj.id]) {
-    this.errcallbacks[obj.id](obj.data);
-    delete this.errcallbacks[obj.id];
-  }
-};
-
-ProviderHelper.prototype._on = function(eventInfo) {
-  var provider = eventInfo.provider;
-  var event = eventInfo.event;
-  var eventPayload = eventInfo.eventPayload;
-  var listeners = this._eventListeners[provider][event];
-  if (listeners) {
-    listeners.forEach(function (listener) {
-      listener(eventPayload);
+    // Request the dependency be added.
+    this.manager.emit(this.manager.delegate, {
+      type: 'Delegation',
+      request: 'handle',
+      flow: 'core',
+      message: {
+        type: 'require',
+        manifest: manifest,
+        id: dependencyName
+      }
+    });
+  } else {
+    this.debug.error('The require function in external context makes no sense' +
+        ' Instead create a new freedom() context.');
+    callback(undefined, {
+      errcode: 'InvalidContext',
+      message: 'Cannot call require() from this context.'
     });
   }
 };
 
-ProviderHelper.prototype.on = function(provider, event, listener) {
-  if (typeof this._eventListeners[provider] === 'undefined') {
-    this._eventListeners[provider] = {};
-  }
-  if (typeof this._eventListeners[provider][event] === 'undefined') {
-    this._eventListeners[provider][event] = [];
-  }
-  this._eventListeners[provider][event].push(listener);
-  this.freedom.emit("listenForEvent", {provider: provider,
-                                 event: event});
+/**
+ * Get the ID of the current freedom.js context.  Provides an
+ * array of module URLs, the lineage of the current context.
+ * When not in an application context, the ID is the lineage
+ * of the current View.
+ * @method getId
+ * @param {Function} callback The function called with ID information.
+ */
+Core_unprivileged.prototype.getId = function(callback) {
+  // TODO: make sure contextID is properly frozen.
+  callback(Core_unprivileged.contextId);
 };
 
 /**
- * Remove all listeners registered through "on" for an event. If an event is not
- * specified, then all listeners for the provider are removed.
+ * Get a logger for logging to the freedom.js logger. Provides a
+ * log object with an interface similar to the standard javascript console,
+ * which logs via debug.
+ * @method getLogger
+ * @param {String} name The name of the logger, used as its 'source'
+ * @param {Function} callback The function to call with the logger.
  */
-ProviderHelper.prototype.removeListeners = function(provider, event) {
-  if (typeof this._eventListeners[provider] !== 'undefined') {
-    if (event) {
-      this._eventListeners[provider][event] = [];
-    } else {
-      this._eventListeners[provider] = {};
-    }
-  }
+Core_unprivileged.prototype.getLogger = function(name, callback) {
+  callback(this.manager.debug.getLogger(name));
 };
 
-
-
-ProviderHelper.prototype.createChannel = function(cb) {
-  this.unboundChanCallbacks.push(cb);
-  this.freedom.emit('createChannel');
+/**
+ * Set the ID of the current freedom.js context.
+ * @method setId
+ * @private
+ * @param {String[]} id The lineage of the current context.
+ * @param {ModuleInternal} moduleInternal The Module environment if one exists.
+ */
+Core_unprivileged.prototype.setId = function(id, moduleInternal) {
+  Core_unprivileged.contextId = id;
+  Core_unprivileged.moduleInternal = moduleInternal;
 };
 
-ProviderHelper.prototype.onInitChannel = function(chanId) {
-  var cb = this.unboundChanCallbacks.pop(); 
-  cb(chanId);
-};
+exports.provider = Core_unprivileged;
+exports.name = "core";
+exports.flags = {module: true};
 
-ProviderHelper.prototype.setChannelCallback = function(chanId, cb) {
-  this.chanCallbacks[chanId] = cb;
-};
-ProviderHelper.prototype.sendToChannel = function(chanId, msg) {
-  this.freedom.emit("outToChannel", {
-    chanId: chanId,
-    message: msg
-  });
-};
-ProviderHelper.prototype.onInFromChannel = function(data) {
-  this.chanCallbacks[data.chanId](data.message);
-};
-
-exports.ProviderHelper = ProviderHelper;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../src/api":4,"../src/bundle":5,"../src/consumer":6,"../src/debug":7,"../src/entry":8,"../src/link/frame":11,"../src/provider":16,"../src/proxy/apiInterface":17,"../src/resource":20,"../src/util":21,"es6-promise":1}],4:[function(require,module,exports){
+},{"../../src/consumer":6,"../../src/proxy/eventInterface":18,"../../src/util":21}],4:[function(require,module,exports){
 /*jslint indent:2,white:true,node:true,sloppy:true */
 var PromiseCompat = require('es6-promise').Promise;
 
@@ -5810,6 +5703,25 @@ util.scripts = function(global) {
 module.exports = util;
 
 },{}],22:[function(require,module,exports){
+(function (global){
+/*jslint node:true*/
+// This alternative entry point can be used to build the contents of an iFrame,
+// when using the frame link of freedom (specifically for unit testing since
+// phantomJS doesn't support web workers.).
+
+var providers = [
+  require('../../providers/core/core.unprivileged')
+];
+
+require('../entry')({
+  isModule: true,
+  portType: require('../link/frame'),
+  providers: providers,
+  global: global
+});
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../../providers/core/core.unprivileged":3,"../entry":8,"../link/frame":11}],23:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5902,69 +5814,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],23:[function(require,module,exports){
-/*globals describe, beforeEach, require, expect, it*/
-/*jslint indent:2*/
-
-// Unit tests for freedom-securechat directly
-// Tests both freedom API calls and internal methods
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-describe('freedom-securechat', function () {
-
-  var testUtil = require('../node_modules/freedom/spec/util');
-  var chatClient, chatDispatch;
-
-  beforeEach(function () {
-    var social = testUtil.getApis().get('social').definition;
-    freedom = {
-      'socialprovider': testUtil.mockIface([
-        ['login', {clientId: 'testuser'}],
-        ['on', 'value'],
-        ['sendMessage', 'value'],
-        ['STATUS', social.STATUS.value],
-        ['ERRCODE', social.ERRCODE.value]
-      ]),
-      'pgpprovider': testUtil.mockIface([
-        ['setup', 'value'],
-        ['clear', 'value'],
-        ['importKeypair', 'value'],
-        ['exportKey', {key: 'fakepublickey'}],
-        ['getFingerprint', 'value'],
-        ['signEncrypt', 'value'],
-        ['verifyDecrypt', 'value'],
-        ['armor', 'value'],
-        ['dearmor', 'value']
-      ])
-    };
-    chatDispatch = jasmine.createSpy('chatDispatch');
-    chatClient = new Chat(chatDispatch);
-    //chatClient.userList.recipient = 'recipient';
-    //chatClient.keyList.recipient = 'fakekey';
-  });
-
-  it('logs in', function(done) {
-    expect(chatClient).toBeDefined();
-    setTimeout(function () {
-      // Wait 2 seconds for login to finish before doing expects
-      expect(chatDispatch).toHaveBeenCalled();
-      var calls = chatDispatch.calls.all();
-      expect(calls[0].args).toEqual(['export-publicKey', 'fakepublickey']);
-      expect(calls[1].args).toEqual(['recv-uid', 'testuser']);
-      expect(calls[2].args).toEqual(['recv-status', 'online']);
-      expect(calls[3].args).toEqual(['recv-buddylist', {}]);
-      done();
-    }, 2000);
-  });
-
-  it('sends messages', function(done) {
-    setTimeout(function () {
-      chatClient.send('recipient', 'Hello world!');
-      setTimeout(function () {
-        expect(chatClient.social.sendMessage).toHaveBeenCalled();
-        done();
-      }, 1000);
-    }, 2000);
-  });
-});
-
-},{"../node_modules/freedom/spec/util":3}]},{},[23]);
+},{}]},{},[22]);

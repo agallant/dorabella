@@ -3,34 +3,66 @@
 
 /**
  * Implementation of a Social provider that depends on
- * the WebSockets server code in server/router.py
- * The current implementation uses a public facing common server
- * hosted on p2pbr.com
+ * the radiatus-providers server
  *
  * The provider offers
  * - A single global buddylist that everyone is on
  * - no reliability
  * - out of order delivery
  * - ephemeral userIds and clientIds
- * @class WSSocialProvider
+ * @class RadiatusSocialProvider
  * @constructor
  * @param {Function} dispatchEvent callback to signal events
  * @param {WebSocket} webSocket Alternative webSocket implementation for tests
  **/
-function WSSocialProvider(dispatchEvent, webSocket) {
+var DEBUGLOGGING = false;
+
+function RadiatusSocialProvider(dispatchEvent, webSocket) {
   this.dispatchEvent = dispatchEvent;
 
   this.websocket = freedom["core.websocket"] || webSocket;
-  this.WS_URL = 'wss://p2pbr.com/route/';
-  this.social = freedom();
+  if (typeof DEBUG !== 'undefined' && DEBUG) {
+    this.WS_URL = 'ws://localhost:8082/route/';
+    this.WS_QUERYSTR = '?freedomAPI=social';
+  } else {
+    this.WS_URL = 'wss://p2pbr.com/route/';
+    // TBD where this sits in production
+    this.WS_URL = 'ws://localhost:8082/route/';
+    this.WS_QUERYSTR = '?freedomAPI=social';
+  }
+  this.social= freedom.social();
 
-  this.conn = null;   // Web Socket
-  this.id = null;     // userId of this user
+  this.conn = null;     // Web Socket
+  this.userId = null;   // userId of this user
   
   //Note that in this.websocket, there is a 1-1 relationship between user and client
   this.users = {};    // List of seen users (<user_profile>)
   this.clients = {};  // List of seen clients (<client_state>)
+
+  //this.TRACE('constructor', 'running in worker ' + self.location.href);
 }
+
+RadiatusSocialProvider.prototype.TRACE = function(method, msg) {
+  if (DEBUGLOGGING) {
+    console.log(
+      'RadiatusSocialProvider.' + 
+      //this.name + '.' +
+      method +
+      ':' + msg
+    );
+  }
+};
+RadiatusSocialProvider.prototype.ERROR = function(method, msg, err) {
+  var toPrint = 'RadiatusSocialProvider.'+method+':';
+  toPrint += msg;
+  if (err && err.message) {
+    toPrint += ', '+err.message;
+  }
+  console.error(toPrint);
+  //console.trace();
+  if (err) console.error(err);
+};
+
 
 /**
  * Connect to the Web Socket rendezvous server
@@ -41,7 +73,8 @@ function WSSocialProvider(dispatchEvent, webSocket) {
  * @param {Object} loginOptions
  * @return {Object} status - Same schema as 'onStatus' events
  **/
-WSSocialProvider.prototype.login = function(loginOpts, continuation) {
+RadiatusSocialProvider.prototype.login = function(loginOpts, continuation) {
+  this.TRACE('login', JSON.stringify(loginOpts));
   // Wrap the continuation so that it will only be called once by
   // onmessage in the case of success.
   var finishLogin = {
@@ -55,20 +88,31 @@ WSSocialProvider.prototype.login = function(loginOpts, continuation) {
   };
 
   if (this.conn !== null) {
+    this.ERROR('login', 'returning error LOGIN_ALREADYONLINE');
     finishLogin.finish(undefined, this.err("LOGIN_ALREADYONLINE"));
     return;
   }
-  this.conn = this.websocket(this.WS_URL + loginOpts.agent);
+  //Scrub agent to be alphanumeric only
+  var agent = '';
+  if (typeof loginOpts !== 'undefined' &&
+      typeof loginOpts.agent !== 'undefined') {
+    agent = loginOpts.agent.replace(/[^a-z0-9]/gi, '');   
+  }
+  var url = this.WS_URL + agent + this.WS_QUERYSTR;
+  this.TRACE('login', 'connecting to '+url);
+  this.conn = this.websocket(url);
   // Save the continuation until we get a status message for
   // successful login.
   this.conn.on("onMessage", this.onMessage.bind(this, finishLogin));
   this.conn.on("onError", function (cont, error) {
-    this.conn = null;
+    //this.conn = null;
+    this.ERROR('conn.on', 'onError event', error);
     cont.finish(undefined, this.err('ERR_CONNECTION'));
   }.bind(this, finishLogin));
   this.conn.on("onClose", function (cont, msg) {
     this.conn = null;
-    this.changeRoster(this.id, false);
+    this.TRACE('this.conn.on', 'onClose event fired');
+    this.changeRoster(this.userId, false);
   }.bind(this, finishLogin));
 
 };
@@ -88,11 +132,14 @@ WSSocialProvider.prototype.login = function(loginOpts, continuation) {
  * } List of <user_profile>s indexed by userId
  *   On failure, rejects with an error code (see above)
  **/
-WSSocialProvider.prototype.getUsers = function(continuation) {
+RadiatusSocialProvider.prototype.getUsers = function(continuation) {
+  this.TRACE('getUsers', 'enter');
   if (this.conn === null) {
+    this.ERROR('getUsers', 'returns error OFFLINE');
     continuation(undefined, this.err("OFFLINE"));
     return;
   }
+  this.TRACE('getUsers', 'returning '+JSON.stringify(this.users));
   continuation(this.users);
 };
 
@@ -111,11 +158,14 @@ WSSocialProvider.prototype.getUsers = function(continuation) {
  * } List of <client_state>s indexed by clientId
  *   On failure, rejects with an error code (see above)
  **/
-WSSocialProvider.prototype.getClients = function(continuation) {
+RadiatusSocialProvider.prototype.getClients = function(continuation) {
+  this.TRACE('getClients', 'enter');
   if (this.conn === null) {
+    this.ERROR('getClients', 'returns error OFFLINE');
     continuation(undefined, this.err("OFFLINE"));
     return;
   }
+  this.TRACE('getClients', 'returning '+JSON.stringify(this.clients));
   continuation(this.clients);
 };
 
@@ -129,39 +179,47 @@ WSSocialProvider.prototype.getClients = function(continuation) {
  * @param {String} destination_id - target
  * @return nothing
  **/
-WSSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
+RadiatusSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
+  this.TRACE('sendMessage', 'to='+to+',msg='+msg);
   if (this.conn === null) {
+    this.ERROR('sendMessage', 'returns error OFFLINE');
     continuation(undefined, this.err("OFFLINE"));
     return;
   } else if (!this.clients.hasOwnProperty(to) && !this.users.hasOwnProperty(to)) {
+    this.ERROR('sendMessage', 'return error SEND_INVALIDDESTINATION');
     continuation(undefined, this.err("SEND_INVALIDDESTINATION"));
     return;
   }
 
   this.conn.send({text: JSON.stringify({to: to, msg: msg})});
+  this.TRACE('sendMessage', 'post send');
   continuation();
 };
 
 /**
- * Disconnects from the Web Socket server
- * e.g. logout(Object options)
- * No options needed
- *
- * @method logout
- * @return {Object} status - same schema as 'onStatus' events
- **/
-WSSocialProvider.prototype.logout = function(continuation) {
+   * Disconnects from the Web Socket server
+   * e.g. logout(Object options)
+   * No options needed
+   * 
+   * @method logout
+   * @return {Object} status - same schema as 'onStatus' events
+   **/
+RadiatusSocialProvider.prototype.logout = function(continuation) {
+  this.TRACE('logout', 'enter');
   if (this.conn === null) { // We may not have been logged in
-    this.changeRoster(this.id, false);
+    this.ERROR('logout', 'returns error OFFLINE');
+    this.changeRoster(this.userId, false);
     continuation(undefined, this.err("OFFLINE"));
     return;
   }
   this.conn.on("onClose", function(continuation) {
+    this.TRACE('this.conn.on', 'onClose event');
     this.conn = null;
-    this.changeRoster(this.id, false);
+    this.changeRoster(this.userId, false);
     continuation();
   }.bind(this, continuation));
   this.conn.close();
+  this.TRACE('logout', 'exit');
 };
 
 /**
@@ -180,7 +238,8 @@ WSSocialProvider.prototype.logout = function(continuation) {
  *                          "ONLINE_WITH_OTHER_APP"
  * @return {Object} - same schema as 'onStatus' event
  **/
-WSSocialProvider.prototype.changeRoster = function(id, stat) {
+RadiatusSocialProvider.prototype.changeRoster = function(id, stat) {
+  this.TRACE('changeRoster', 'id='+id+',stat='+stat);
   var newStatus, result = {
     userId: id,
     clientId: id,
@@ -228,34 +287,43 @@ WSSocialProvider.prototype.changeRoster = function(id, stat) {
  * @param {String} msg Message from the server (see server/router.py for schema)
  * @return nothing
  **/
-WSSocialProvider.prototype.onMessage = function(finishLogin, msg) {
-  var i;
-  msg = JSON.parse(msg.text);
+RadiatusSocialProvider.prototype.onMessage = function(finishLogin, msg) {
+  this.TRACE('onMessage', JSON.stringify(msg));
+  try {
+    msg = JSON.parse(msg.text);
 
-  // If state information from the server
-  // Store my own ID and all known users at the time
-  if (msg.cmd === 'state') {
-    this.id = msg.id;
-    for (i = 0; i < msg.msg.length; i += 1) {
-      this.changeRoster(msg.msg[i], true);
-    }
-    finishLogin.finish(this.changeRoster(this.id, true));
+    // If state information from the server
+    // Store my own ID and all known users at the time
+    if (msg.cmd === 'state') {
+      this.TRACE('onMessage', 'initial state');
+      this.userId = msg.userId;
+      for (var i = 0; i < msg.roster.length; i += 1) {
+        this.changeRoster(msg.roster[i], true);
+      }
+      var ret = this.changeRoster(this.userId, true);
+      this.TRACE('login', 'returns '+JSON.stringify(ret));
+      finishLogin.finish(ret);
     // If directed message, emit event
-  } else if (msg.cmd === 'message') {
-    this.dispatchEvent('onMessage', {
-      from: this.changeRoster(msg.from, true),
-      message: msg.msg
-    });
+    } else if (msg.cmd === 'message') {
+      this.TRACE('onMessage', 'forwarding message from '+msg.from);
+      this.dispatchEvent('onMessage', {
+        from: this.changeRoster(msg.from, true),
+        message: msg.msg
+      });
     // Roster change event
-  } else if (msg.cmd === 'roster') {
-    this.changeRoster(msg.id, msg.online);
+    } else if (msg.cmd === 'roster') {
+      this.TRACE('onMessage', 'roster '+msg.userId+'='+msg.online);
+      this.changeRoster(msg.userId, msg.online);
     // No idea what this message is, but let's keep track of who it's from
-  } else if (msg.from) {
-    this.changeRoster(msg.from, true);
+    } else if (msg.from) {
+      this.changeRoster(msg.from, true);
+    }
+  } catch (e) {
+    this.ERROR('onMessage', 'error handling '+msg.text, e);
   }
 };
 
-WSSocialProvider.prototype.err = function(code) {
+RadiatusSocialProvider.prototype.err = function(code) {
   var err = {
     errcode: code,
     message: this.social.ERRCODE[code]
@@ -265,11 +333,5 @@ WSSocialProvider.prototype.err = function(code) {
 
 /** REGISTER PROVIDER **/
 if (typeof freedom !== 'undefined') {
-  freedom().provideAsynchronous(WSSocialProvider);
+  freedom.social().provideAsynchronous(RadiatusSocialProvider);
 }
-
-if (typeof exports !== 'undefined') {
-  exports.provider = WSSocialProvider;
-  exports.name = 'social';
-}
-
