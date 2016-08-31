@@ -21,7 +21,7 @@ function WSSocialProvider(dispatchEvent, webSocket) {
   this.dispatchEvent = dispatchEvent;
 
   this.websocket = freedom["core.websocket"] || webSocket;
-  this.WS_URL = 'wss://p2pbr.com/route/';
+  this.WS_URL = 'wss://social.dorabella.io:8082/route/';
   this.social = freedom();
 
   this.conn = null;   // Web Socket

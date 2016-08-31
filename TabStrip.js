@@ -58,8 +58,12 @@ EventEmitter.prototype.emit = function(type) {
       er = arguments[1];
       if (er instanceof Error) {
         throw er; // Unhandled 'error' event
+      } else {
+        // At least give some kind of context to the user
+        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+        err.context = er;
+        throw err;
       }
-      throw TypeError('Uncaught, unspecified "error" event.');
     }
   }
 
@@ -328,22 +332,24 @@ var TabStrip = (function (_super) {
             var tabRect = tabElement.getBoundingClientRect();
             var leftOffsetFromMouse = tabRect.left - event.clientX;
             var hasDragged = false;
-            tabElement.classList.add("dragged");
-            tabElement.style.width = tabRect.width + "px";
-            // NOTE: set/releaseCapture aren't supported in Chrome yet
-            // hence the conditional call
-            if (tabElement.setCapture != null)
-                tabElement.setCapture();
             var tabPlaceholderElement = document.createElement("li");
             tabPlaceholderElement.style.width = tabRect.width + "px";
             tabPlaceholderElement.className = "drop-placeholder";
             tabPlaceholderElement.classList.toggle("pinned", tabElement.classList.contains("pinned"));
-            tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
             var updateDraggedTab = function (clientX) {
                 var tabsRootRect = _this.tabsRoot.getBoundingClientRect();
                 var tabLeft = Math.max(Math.min(clientX + leftOffsetFromMouse, tabsRootRect.right - tabRect.width), tabsRootRect.left);
                 if (hasDragged || Math.abs(tabLeft - tabRect.left) >= 10) {
-                    hasDragged = true;
+                    if (!hasDragged) {
+                        tabElement.classList.add("dragged");
+                        tabElement.style.width = tabRect.width + "px";
+                        // NOTE: set/releaseCapture aren't supported in Chrome yet
+                        // hence the conditional call
+                        if (tabElement.setCapture != null)
+                            tabElement.setCapture();
+                        tabElement.parentElement.insertBefore(tabPlaceholderElement, tabElement.nextSibling);
+                        hasDragged = true;
+                    }
                 }
                 else {
                     tabLeft = tabRect.left;
@@ -387,15 +393,17 @@ var TabStrip = (function (_super) {
                 // hence the conditional call
                 if (tabElement.releaseCapture != null)
                     tabElement.releaseCapture();
-                if (tabPlaceholderElement.parentElement != null) {
-                    _this.tabsRoot.replaceChild(tabElement, tabPlaceholderElement);
+                if (hasDragged) {
+                    if (tabPlaceholderElement.parentElement != null) {
+                        _this.tabsRoot.replaceChild(tabElement, tabPlaceholderElement);
+                    }
+                    else {
+                        _this.tabsRoot.appendChild(tabElement);
+                    }
+                    tabElement.classList.remove("dragged");
+                    tabElement.style.left = "";
+                    tabElement.style.width = "";
                 }
-                else {
-                    _this.tabsRoot.appendChild(tabElement);
-                }
-                tabElement.classList.remove("dragged");
-                tabElement.style.left = "";
-                tabElement.style.width = "";
                 document.removeEventListener("mousemove", onDragTab);
                 document.removeEventListener("mouseup", onDropTab);
             };
